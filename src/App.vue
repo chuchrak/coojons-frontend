@@ -407,11 +407,11 @@ const addLesson = () => { if(newLesson.value.subject && newLesson.value.day){ if
 const removeLesson = (major, lesson) => { sharedSchedules.value[major] = sharedSchedules.value[major].filter(l => l !== lesson); };
 
 const myPayments = computed(() => sharedPayments.value.filter(p => p.studentId === user.value?.nrAlbumu));
-const myGrades = computed(() => sharedGrades.value.filter(g => g.studentId === user.value?.nrAlbumu));
+const myGrades = computed(() => sharedGrades.value.filter(g => String(g.studentId) === String(user.value?.nrAlbumu)));
 const myRequests = computed(() => sharedRequests.value.filter(r => r.studentId === user.value?.nrAlbumu));
 const myNotifications = computed(() => sharedNotifications.value.filter(n => n.studentId === user.value?.nrAlbumu));
 const mySchedule = computed(() => { if (user.value && user.value.kierunek) { return sharedSchedules.value[user.value.kierunek] || []; } return []; });
-const myAttendance = computed(() => sharedAttendance.value.filter(a => a.studentId === user.value?.nrAlbumu).sort((a,b) => new Date(b.date) - new Date(a.date)));
+const myAttendance = computed(() => sharedAttendance.value.filter(a => String(a.studentId) === String(user.value?.nrAlbumu)));
 
 const unpaidCount = computed(() => myPayments.value.filter(p => p.status === 'Do zapłaty').length);
 const totalUnpaid = computed(() => myPayments.value.filter(p => p.status === 'Do zapłaty').reduce((sum, p) => sum + p.amount, 0));
