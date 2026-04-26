@@ -173,9 +173,9 @@
             </div>
 
             <div v-if="activeTabAdmin === 'ogloszenia'">
-              <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Publikacja Ogłoszeń</h3>
+              <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Publikacja Ogłoszeń (Baza Supabase)</h3>
               <div class="card bg-panel border-0 mb-4 shadow-sm"><div class="card-body"><input v-model="newNews.title" type="text" class="form-control bg-dark text-white mb-3 border-secondary" placeholder="Tytuł ogłoszenia"><textarea v-model="newNews.desc" class="form-control bg-dark text-white mb-3 border-secondary" rows="3" placeholder="Treść ogłoszenia..."></textarea><button @click="postNews" class="btn btn-primary fw-bold px-4 text-dark">Opublikuj na tablicy</button></div></div>
-              <ul class="list-group"><li v-for="(news, idx) in sharedNews" :key="idx" class="list-group-item bg-dark text-white border-secondary py-3"><strong class="text-info">{{ news.date }}</strong> - <strong class="fs-5">{{ news.title }}</strong><br><span class="text-white-50 d-block mt-2">{{ news.desc }}</span><button @click="sharedNews.splice(idx, 1)" class="btn btn-sm btn-danger mt-3 opacity-75">Usuń</button></li></ul>
+              <ul class="list-group"><li v-for="news in sharedNews" :key="news.id" class="list-group-item bg-dark text-white border-secondary py-3"><strong class="text-info">{{ news.date }}</strong> - <strong class="fs-5">{{ news.title }}</strong><br><span class="text-white-50 d-block mt-2">{{ news.desc }}</span><button @click="deleteNews(news.id)" class="btn btn-sm btn-danger mt-3 opacity-75">Usuń</button></li></ul>
             </div>
           </div>
 
@@ -203,7 +203,7 @@
               </div>
               <div v-if="myNotifications.length > 0" class="alert bg-dark border-warning text-warning shadow-sm mb-5"><h6 class="fw-bold mb-2">🔔 Masz nowe powiadomienia:</h6><ul class="mb-0 ps-3"><li v-for="(n, idx) in myNotifications" :key="idx">{{ n.msg }}</li></ul></div>
               <h5 class="fw-bold mb-3 text-white">Aktualności Uczelniane</h5>
-              <div class="d-flex flex-column gap-3"><div v-for="(news, index) in sharedNews" :key="index" class="card bg-panel border-0 shadow-sm"><div class="card-body d-flex"><div class="text-info fw-bold me-4 fs-5">{{ news.date }}</div><div><h6 class="fw-bold text-white mb-1">{{ news.title }}</h6><small class="text-white-50">{{ news.desc }}</small></div></div></div></div>
+              <div class="d-flex flex-column gap-3"><div v-for="news in sharedNews" :key="news.id" class="card bg-panel border-0 shadow-sm"><div class="card-body d-flex"><div class="text-info fw-bold me-4 fs-5">{{ news.date }}</div><div><h6 class="fw-bold text-white mb-1">{{ news.title }}</h6><small class="text-white-50">{{ news.desc }}</small></div></div></div></div>
             </div>
 
             <div v-if="activeTab === 'platnosci'">
@@ -297,7 +297,8 @@ const sendChatMessage = () => { if (!chatInput.value.trim()) return; const userT
 const students = ref([]);
 const sharedGrades = ref([]);
 const sharedAttendance = ref([]);
-const sharedRequests = ref([]); // Dodano wnioski do chmury
+const sharedRequests = ref([]); 
+const sharedNews = ref([]); // Przeniesiono ogłoszenia do chmury!
 
 // Pobieranie początkowe z bazy online
 const fetchData = async () => {
@@ -310,9 +311,12 @@ const fetchData = async () => {
   const { data: att } = await supabase.from('attendance').select('*');
   if (att) sharedAttendance.value = att;
   
-  // Pobieranie Wniosków
   const { data: req } = await supabase.from('requests').select('*').order('id', { ascending: false });
   if (req) sharedRequests.value = req;
+  
+  // POBIERANIE OGŁOSZEŃ Z SUPABASE
+  const { data: nw } = await supabase.from('news').select('*').order('id', { ascending: false });
+  if (nw) sharedNews.value = nw;
 };
 
 // Nasłuchiwanie na zmiany u innych użytkowników (Multiplayer)
@@ -322,6 +326,7 @@ const subscribeRealtime = () => {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'grades' }, fetchData)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, fetchData)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, fetchData)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'news' }, fetchData)
     .subscribe();
 };
 
@@ -334,7 +339,7 @@ onMounted(() => {
 onUnmounted(() => { clearInterval(timerInterval); });
 
 // =========================================================================
-// LOKALNA PAMIĘĆ (Dla reszty mniej ważnych danych by nie obciążać bazy)
+// LOKALNA PAMIĘĆ (Płatności i plany - nie są jeszcze w chmurze!)
 // =========================================================================
 
 const baseLecturers = [
@@ -379,7 +384,6 @@ const baseSchedules = {
 const sharedSchedules = ref(JSON.parse(localStorage.getItem('coojons_schedules')) || baseSchedules);
 watch(sharedSchedules, (val) => localStorage.setItem('coojons_schedules', JSON.stringify(val)), { deep: true });
 
-
 const basePayments = [{ id: 1, studentId: '84932', title: 'Opłata za warunkowy wpis na semestr', amount: 800.00, status: 'Do zapłaty' }, { id: 2, studentId: '84932', title: 'Wydanie duplikatu legitymacji', amount: 33.00, status: 'Do zapłaty' }, { id: 3, studentId: '84933', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Do zapłaty' }, { id: 4, studentId: '84934', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Opłacone' }];
 const sharedPayments = ref(JSON.parse(localStorage.getItem('coojons_payments')) || basePayments);
 watch(sharedPayments, (val) => localStorage.setItem('coojons_payments', JSON.stringify(val)), { deep: true });
@@ -388,13 +392,8 @@ const baseNotifications = [{ studentId: '84932', msg: 'Zwróć książki do bibl
 const sharedNotifications = ref(JSON.parse(localStorage.getItem('coojons_notifications')) || baseNotifications);
 watch(sharedNotifications, (val) => localStorage.setItem('coojons_notifications', JSON.stringify(val)), { deep: true });
 
-const baseNews = [{ date: 'Dzisiaj', title: 'System Rozliczeń', desc: 'Uruchomiono moduł płatności oraz integrację mLegitymacji.' }, { date: '15.04', title: 'Przerwa Świąteczna', desc: 'Przypominamy o przerwie w dniach 1-3 Maja.' }];
-const sharedNews = ref(JSON.parse(localStorage.getItem('coojons_news')) || baseNews);
-watch(sharedNews, (val) => localStorage.setItem('coojons_news', JSON.stringify(val)), { deep: true });
-
 // =========================================================================
 
-// --- DNI TYGODNIA DO GRUPOWANIA PLANU ---
 const daysOfWeek = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'];
 const getLessonsByDay = (schedule, day) => { if(!schedule) return []; return schedule.filter(l => l.day === day).sort((a,b) => a.time.localeCompare(b.time)); };
 
@@ -405,7 +404,6 @@ const newLesson = ref({ day: '', time: '', subject: '', room: '' });
 const addLesson = () => { if(newLesson.value.subject && newLesson.value.day){ if (!sharedSchedules.value[adminSelectedMajor.value]) { sharedSchedules.value[adminSelectedMajor.value] = []; } sharedSchedules.value[adminSelectedMajor.value].push({...newLesson.value}); newLesson.value = { day: '', time: '', subject: '', room: '' }; showFlash(`Zajęcia dodane do planu: ${adminSelectedMajor.value}!`); } };
 const removeLesson = (major, lesson) => { sharedSchedules.value[major] = sharedSchedules.value[major].filter(l => l !== lesson); };
 
-// POPRAWKA STRING() - GWARANCJA ŻE NR ALBUMU I ID ZAWSZE SIĘ ZGODZĄ
 const myPayments = computed(() => sharedPayments.value.filter(p => String(p.studentId) === String(user.value?.nrAlbumu)));
 const myGrades = computed(() => sharedGrades.value.filter(g => String(g.studentId) === String(user.value?.nrAlbumu)));
 const myRequests = computed(() => sharedRequests.value.filter(r => String(r.studentId) === String(user.value?.nrAlbumu)));
@@ -430,62 +428,53 @@ const closePayment = () => { activePayment.value = null; paymentSuccess.value = 
 const newDocType = ref(''); const newDocDescription = ref(''); const newDocAttachment = ref(null); const fileInputRef = ref(null);
 const handleFileUpload = (event) => { const file = event.target.files[0]; if (file) { newDocAttachment.value = file.name; } else { newDocAttachment.value = null; } };
 
-// ZGŁASZANIE WNIOSKU PRZEZ STUDENTA DO CHMURY
 const submitDocument = async () => { 
   if (!newDocType.value || !newDocDescription.value) return; 
-  
-  const newReq = { 
-    studentId: user.value.nrAlbumu, 
-    student: user.value.name, 
-    type: newDocType.value, 
-    description: newDocDescription.value, 
-    attachment: newDocAttachment.value, 
-    date: new Date().toLocaleDateString('pl-PL'), 
-    status: 'Nowy' 
-  }; 
-  
+  const newReq = { studentId: user.value.nrAlbumu, student: user.value.name, type: newDocType.value, description: newDocDescription.value, attachment: newDocAttachment.value || 'Brak', date: new Date().toLocaleDateString('pl-PL'), status: 'Nowy' }; 
   const { error } = await supabase.from('requests').insert([newReq]);
-  if (!error) {
-    await fetchData(); // Odśwież natychmiast
-    showFlash('Wniosek został poprawnie wygenerowany i przekazany do Dziekanatu.'); 
-    newDocType.value = ''; 
-    newDocDescription.value = ''; 
-    newDocAttachment.value = null; 
-    if(fileInputRef.value) fileInputRef.value.value = ''; 
-  }
+  if (!error) { await fetchData(); showFlash('Wniosek został przekazany do Dziekanatu.'); newDocType.value = ''; newDocDescription.value = ''; newDocAttachment.value = null; if(fileInputRef.value) fileInputRef.value.value = ''; }
 };
+
 const downloadAttachment = (fileName) => { const content = `Symulacja pobranego załącznika: ${fileName}\n\n(Plik demonstracyjny systemu COOJONS)`; const blob = new Blob([content], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(link.href); showFlash(`Rozpoczęto pobieranie pliku: ${fileName}`); };
 
 const isEditing = ref(false); const currentStudent = ref({ imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }); const actionStudent = ref(null); const tempActionData = ref({ subject: '', grade: '5.0' });
 const studentSpecificSubjects = computed(() => { const subs = new Set(['Język Angielski', 'BHP']); if (actionStudent.value?.kierunek && sharedSchedules.value[actionStudent.value.kierunek]) { sharedSchedules.value[actionStudent.value.kierunek].forEach(l => subs.add(l.subject)); } return Array.from(subs).sort(); });
 const openGradeModal = (st) => { actionStudent.value = st; };
 
-// Dziekanat Wystawia Ocenę (CHMURA)
 const submitGrade = async () => { 
   if(tempActionData.value.subject){ 
     const newGrade = { studentId: actionStudent.value.nrAlbumu, subject: tempActionData.value.subject, grade: tempActionData.value.grade, date: new Date().toLocaleDateString('pl-PL') };
-    
-    // Zapis do Supabase
     const { error } = await supabase.from('grades').insert([newGrade]);
-    
-    if(!error) {
-      await fetchData(); // <--- ODSWIEZ BEZ F5
-      showFlash(`Oceniono studenta w chmurze: ${actionStudent.value.imie}!`); 
-      actionStudent.value = null; 
-      tempActionData.value.subject = ''; 
-    }
+    if(!error) { await fetchData(); showFlash(`Oceniono studenta w chmurze: ${actionStudent.value.imie}!`); actionStudent.value = null; tempActionData.value.subject = ''; }
   } 
 };
 const openMsgModal = (st) => { const msg = prompt(`Wiadomość dla: ${st.imie} ${st.nazwisko}`); if(msg) { sharedNotifications.value.push({ studentId: st.nrAlbumu, msg }); showFlash('Powiadomienie wysłane do studenta!'); } };
-const newNews = ref({ title: '', desc: '' }); const postNews = () => { if(newNews.value.title){ sharedNews.value.unshift({ date: 'Nowe', title: newNews.value.title, desc: newNews.value.desc }); newNews.value = { title: '', desc: '' }; showFlash('Ogłoszenie opublikowane!'); } };
 
-// ZMIANA STATUSU WNIOSKU PRZEZ DZIEKANAT W CHMURZE
+// --- NOWY KOD DLA OGŁOSZEŃ (W CHMURZE) ---
+const newNews = ref({ title: '', desc: '' }); 
+const postNews = async () => { 
+  if(newNews.value.title){ 
+    const n = { title: newNews.value.title, desc: newNews.value.desc, date: new Date().toLocaleDateString('pl-PL') };
+    const { error } = await supabase.from('news').insert([n]);
+    if(!error) {
+      await fetchData();
+      newNews.value = { title: '', desc: '' }; 
+      showFlash('Ogłoszenie opublikowane w chmurze!'); 
+    }
+  } 
+};
+const deleteNews = async (id) => {
+  const { error } = await supabase.from('news').delete().eq('id', id);
+  if(!error) {
+    await fetchData();
+    showFlash('Ogłoszenie usunięte z tablicy.');
+  }
+};
+// ----------------------------------------
+
 const resolveRequest = async (reqId, newStatus) => { 
   const { error } = await supabase.from('requests').update({ status: newStatus }).eq('id', reqId);
-  if (!error) {
-    await fetchData(); // Odśwież natychmiast
-    showFlash(`Status wniosku zmieniono na: ${newStatus}`); 
-  }
+  if (!error) { await fetchData(); showFlash(`Status wniosku zmieniono na: ${newStatus}`); }
 };
 const showFlash = (msg) => { flashMessage.value = msg; setTimeout(() => flashMessage.value = '', 4000); };
 
@@ -507,89 +496,44 @@ const studentsForLecturerSubject = computed(() => {
   return students.value.filter(s => validMajors.includes(s.kierunek));
 });
 
-// Wykładowca wystawia Ocenę (CHMURA)
 const saveLecturerGrade = async (student) => {
   const grade = tempLecturerGrades.value[student.nrAlbumu]; 
   if (!grade) { showFlash('Wybierz ocenę!'); return; }
-  
   const newGrade = { studentId: student.nrAlbumu, subject: selectedSubjectLecturer.value, grade: grade, date: new Date().toLocaleDateString('pl-PL') };
-  
   const { error } = await supabase.from('grades').insert([newGrade]);
-  if(!error) {
-    await fetchData(); // <--- ODSWIEZ BEZ F5
-    showFlash(`Wystawiono ocenę w chmurze studentowi: ${student.imie} ${student.nazwisko}`); 
-    tempLecturerGrades.value[student.nrAlbumu] = null; 
-  }
+  if(!error) { await fetchData(); showFlash(`Wystawiono ocenę w chmurze studentowi: ${student.imie} ${student.nazwisko}`); tempLecturerGrades.value[student.nrAlbumu] = null; }
 };
 
 const getAttendanceStatus = (studentId) => { const record = sharedAttendance.value.find(a => String(a.studentId) === String(studentId) && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); return record ? record.status : null; };
 
-// Wykładowca Wystawia Frekwencje (CHMURA)
 const markAttendance = async (studentId, status) => { 
   const record = sharedAttendance.value.find(a => String(a.studentId) === String(studentId) && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); 
-  
-  if (record) { 
-    // Prosta symulacja updatu - dla Supabase musimy celować po konkretnych parametrach, jesli nie mamy ID
-    await supabase.from('attendance').update({ status: status }).match({ studentId: studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value });
-  } else { 
-    await supabase.from('attendance').insert([{ studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value, status }]);
-  } 
-  
-  await fetchData(); // <--- ODSWIEZ BEZ F5
-  showFlash(`Zapisano w chmurze: ${status}`); 
+  if (record) { await supabase.from('attendance').update({ status: status }).match({ studentId: studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value });
+  } else { await supabase.from('attendance').insert([{ studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value, status }]); } 
+  await fetchData(); showFlash(`Zapisano w chmurze: ${status}`); 
 };
 
-// --- LOGOWANIE (ASYNC - POPRAWA BŁĘDU PIERWSZEGO WEJŚCIA) ---
 const handleLogin = async () => {
   loginError.value = false; 
-  
-  await fetchData(); // <--- ZMUSZA SYSTEM DO POBRANIA DANYCH ZANIM SPRAWDZI HASŁO
-
-  if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { 
-    user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; return; 
-  } 
-  
+  await fetchData(); 
+  if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; return; } 
   const foundLecturer = lecturers.value.find(l => l.login === loginForm.value.username && l.password === loginForm.value.password);
-  if (foundLecturer) { 
-    user.value = { role: 'wykładowca', login: foundLecturer.login, name: foundLecturer.name, subjects: foundLecturer.subjects }; activeTabLecturer.value = 'pulpit'; return; 
-  }
-
-  // Szukanie w tablicy POBRANEJ Z CHMURY
+  if (foundLecturer) { user.value = { role: 'wykładowca', login: foundLecturer.login, name: foundLecturer.name, subjects: foundLecturer.subjects }; activeTabLecturer.value = 'pulpit'; return; }
   const foundStudent = students.value.find(s => s.login === loginForm.value.username && s.password === loginForm.value.password);
-  
-  if (foundStudent) { 
-    user.value = { role: 'student', login: foundStudent.login, nrAlbumu: foundStudent.nrAlbumu, name: `${foundStudent.imie} ${foundStudent.nazwisko}`, kierunek: foundStudent.kierunek }; activeTab.value = 'pulpit'; 
-  } else { 
-    loginError.value = true;
-  }
+  if (foundStudent) { user.value = { role: 'student', login: foundStudent.login, nrAlbumu: foundStudent.nrAlbumu, name: `${foundStudent.imie} ${foundStudent.nazwisko}`, kierunek: foundStudent.kierunek }; activeTab.value = 'pulpit'; } else { loginError.value = true; }
 };
 
 const loginWithGoogle = () => { isGoogleLoading.value = true; setTimeout(() => { isGoogleLoading.value = false; user.value = { role: 'student', login: 'google_user', nrAlbumu: 'GoogleAuth', name: 'Student (Google ID)', googleAuth: true, kierunek: 'Informatyka' }; activeTab.value = 'pulpit'; showFlash('Zalogowano przez Google!'); }, 1500); };
 const logout = () => { user.value = null; activePayment.value = null; loginForm.value.username = ''; loginForm.value.password = '';};
 
-// Dodawanie Studenta do bazy w Chmurze
 const saveStudent = async () => { 
   const studentToSave = { ...currentStudent.value, password: currentStudent.value.password || '123' }; 
-  
   const { error } = await supabase.from('students').insert([studentToSave]);
-  
-  if(!error) {
-    await fetchData(); // <--- ODSWIEZ BEZ F5
-    isEditing.value = false; 
-    showFlash(`Utworzono konto w chmurze dla: ${currentStudent.value.login}`); 
-    currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; 
-  } else {
-    showFlash("Błąd zapisu! Sprawdź tabelę Supabase.");
-  }
+  if(!error) { await fetchData(); isEditing.value = false; showFlash(`Utworzono konto w chmurze dla: ${currentStudent.value.login}`); currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; } else { showFlash("Błąd zapisu! Sprawdź tabelę Supabase."); }
 };
 
-// Usuwanie z bazy w chmurze
 const deleteStudent = async (student) => { 
-  if(confirm(`Usunąć studenta ${student.imie}?`)) { 
-    await supabase.from('students').delete().eq('nrAlbumu', student.nrAlbumu);
-    await fetchData(); // <--- ODSWIEZ BEZ F5
-    showFlash("Skreślono z listy w chmurze."); 
-  } 
+  if(confirm(`Usunąć studenta ${student.imie}?`)) { await supabase.from('students').delete().eq('nrAlbumu', student.nrAlbumu); await fetchData(); showFlash("Skreślono z listy w chmurze."); } 
 };
 </script>
 
