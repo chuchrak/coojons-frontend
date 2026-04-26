@@ -15,8 +15,6 @@
 
               <div class="d-flex align-items-center my-4"><hr class="flex-grow-1 border-secondary"><span class="mx-3 text-white-50 small fw-bold">LUB</span><hr class="flex-grow-1 border-secondary"></div>
               <button @click="loginWithGoogle" :disabled="isGoogleLoading" class="btn btn-light w-100 py-2 fw-bold rounded-3 d-flex justify-content-center align-items-center gap-3 google-btn">
-                <svg v-if="!isGoogleLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
-                <div v-else class="spinner-border spinner-border-sm text-primary" role="status"></div>
                 <span class="text-dark">{{ isGoogleLoading ? 'Łączenie z Google...' : 'Zaloguj przez Google' }}</span>
               </button>
             </div>
@@ -81,7 +79,6 @@
           <div class="mt-auto px-2 pb-3">
             <div class="mb-3 text-center d-flex align-items-center justify-content-center flex-column">
               <span class="text-white fw-bold mb-1">{{ user.name }}</span>
-              <span v-if="user.googleAuth" class="badge bg-light text-dark px-3 py-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="12px" height="12px" class="me-1"><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/></svg>Zalogowano (Google)</span>
             </div>
             <button @click="logout" class="btn w-100 py-2 border border-secondary text-white-50 hover-logout rounded-pill">[→ WYLOGUJ</button>
           </div>
@@ -128,10 +125,10 @@
             </div>
             
             <div v-if="activeTabAdmin === 'wnioski'">
-              <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Wnioski studenckie (Zarządzanie)</h3>
+              <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Wnioski studenckie (Zarządzanie Chmurą)</h3>
               <div class="list-group">
-                <div v-for="(req, index) in sharedRequests" :key="index" class="list-group-item bg-panel border-secondary mb-3 rounded shadow-sm p-4"><div class="d-flex justify-content-between align-items-start mb-3"><div><span v-if="req.status === 'Nowy'" class="badge bg-danger mb-2 px-2 py-1">NOWY WNIOSEK</span><span v-if="req.status === 'Zatwierdzony'" class="badge bg-success mb-2 px-2 py-1">ZATWIERDZONY</span><span v-if="req.status === 'Odrzucony'" class="badge bg-secondary mb-2 px-2 py-1">ODRZUCONY</span><h4 class="fw-bold text-info mb-1">{{ req.type }}</h4><small class="text-white-50">Złożony przez: <span class="text-white">{{ req.student }} ({{ req.studentId }})</span> | Data: {{ req.date }}</small></div><div v-if="req.status === 'Nowy'" class="d-flex gap-2"><button @click="resolveRequest(index, 'Zatwierdzony')" class="btn btn-success fw-bold px-4">Zatwierdź</button><button @click="resolveRequest(index, 'Odrzucony')" class="btn btn-outline-danger fw-bold px-4">Odrzuć</button></div></div><div class="bg-dark p-3 rounded border border-secondary mt-2"><h6 class="text-white-50 mb-2 font-monospace text-uppercase" style="font-size: 0.8em;">Uzasadnienie studenta:</h6><p class="text-white mb-2">{{ req.description || 'Brak uzasadnienia.' }}</p><div v-if="req.attachment" class="mt-3 pt-3 border-top border-secondary d-flex align-items-center"><span class="text-white-50 me-3" style="font-size: 0.9em;">Załączony dokument:</span><span class="badge bg-secondary text-light py-2 px-3 border border-secondary d-flex align-items-center"><span class="fs-6 me-2">📎</span> {{ req.attachment }}</span><button @click="downloadAttachment(req.attachment)" class="btn btn-sm btn-outline-light rounded-pill px-3 ms-3">Pobierz plik</button></div></div></div>
-                <div v-if="sharedRequests.length === 0" class="text-center py-5 text-white-50">Brak oczekujących wniosków w systemie.</div>
+                <div v-for="req in sharedRequests" :key="req.id" class="list-group-item bg-panel border-secondary mb-3 rounded shadow-sm p-4"><div class="d-flex justify-content-between align-items-start mb-3"><div><span v-if="req.status === 'Nowy'" class="badge bg-danger mb-2 px-2 py-1">NOWY WNIOSEK</span><span v-if="req.status === 'Zatwierdzony'" class="badge bg-success mb-2 px-2 py-1">ZATWIERDZONY</span><span v-if="req.status === 'Odrzucony'" class="badge bg-secondary mb-2 px-2 py-1">ODRZUCONY</span><h4 class="fw-bold text-info mb-1">{{ req.type }}</h4><small class="text-white-50">Złożony przez: <span class="text-white">{{ req.student }} ({{ req.studentId }})</span> | Data: {{ req.date }}</small></div><div v-if="req.status === 'Nowy'" class="d-flex gap-2"><button @click="resolveRequest(req.id, 'Zatwierdzony')" class="btn btn-success fw-bold px-4">Zatwierdź</button><button @click="resolveRequest(req.id, 'Odrzucony')" class="btn btn-outline-danger fw-bold px-4">Odrzuć</button></div></div><div class="bg-dark p-3 rounded border border-secondary mt-2"><h6 class="text-white-50 mb-2 font-monospace text-uppercase" style="font-size: 0.8em;">Uzasadnienie studenta:</h6><p class="text-white mb-2">{{ req.description || 'Brak uzasadnienia.' }}</p><div v-if="req.attachment" class="mt-3 pt-3 border-top border-secondary d-flex align-items-center"><span class="text-white-50 me-3" style="font-size: 0.9em;">Załączony dokument:</span><span class="badge bg-secondary text-light py-2 px-3 border border-secondary d-flex align-items-center"><span class="fs-6 me-2">📎</span> {{ req.attachment }}</span><button @click="downloadAttachment(req.attachment)" class="btn btn-sm btn-outline-light rounded-pill px-3 ms-3">Pobierz plik</button></div></div></div>
+                <div v-if="sharedRequests.length === 0" class="text-center py-5 text-white-50">Brak oczekujących wniosków w chmurze.</div>
               </div>
             </div>
 
@@ -244,9 +241,9 @@
 
             <div v-if="activeTab === 'dokumenty'">
               <h4 class="fw-bold mb-3 text-white">E-Teczka i Wnioski</h4>
-              <div class="card bg-dark border-info border-2 mb-4 p-4 shadow-sm rounded-4"><h5 class="text-info fw-bold mb-4">Złóż nowy wniosek do Dziekanatu</h5><div class="row g-3"><div class="col-md-6"><label class="form-label text-white-50 small text-uppercase">Wybierz typ wniosku *</label><select v-model="newDocType" class="form-select bg-panel text-white border-secondary"><option disabled value="">Wybierz formularz z listy...</option><option value="Wniosek o stypendium rektora">Wniosek o Stypendium Rektora</option><option value="Wniosek o stypendium socjalne">Wniosek o Stypendium Socjalne</option><option value="Wniosek o wpis warunkowy">Wniosek o wpis warunkowy na kolejny semestr</option><option value="Wniosek o urlop dziekański">Wniosek o urlop dziekański</option></select></div><div class="col-md-6"><label class="form-label text-white-50 small text-uppercase">Załączniki (pdf, jpg, png)</label><input type="file" ref="fileInputRef" @change="handleFileUpload" class="form-control bg-panel text-white-50 border-secondary"></div><div class="col-12"><label class="form-label text-white-50 small text-uppercase">Uzasadnienie / Dodatkowe dane *</label><textarea v-model="newDocDescription" class="form-control bg-panel text-white border-secondary" rows="3" placeholder="Opisz powód składania wniosku, podaj przedmioty warunkowe lub inne potrzebne informacje..."></textarea></div><div class="col-12 text-end mt-4 border-top border-secondary pt-3"><button @click="submitDocument" class="btn btn-success fw-bold px-5 text-dark" :disabled="!newDocType || !newDocDescription">Wyślij wniosek</button></div></div></div>
+              <div class="card bg-dark border-info border-2 mb-4 p-4 shadow-sm rounded-4"><h5 class="text-info fw-bold mb-4">Złóż nowy wniosek do Dziekanatu (Dane z Chmury)</h5><div class="row g-3"><div class="col-md-6"><label class="form-label text-white-50 small text-uppercase">Wybierz typ wniosku *</label><select v-model="newDocType" class="form-select bg-panel text-white border-secondary"><option disabled value="">Wybierz formularz z listy...</option><option value="Wniosek o stypendium rektora">Wniosek o Stypendium Rektora</option><option value="Wniosek o stypendium socjalne">Wniosek o Stypendium Socjalne</option><option value="Wniosek o wpis warunkowy">Wniosek o wpis warunkowy na kolejny semestr</option><option value="Wniosek o urlop dziekański">Wniosek o urlop dziekański</option></select></div><div class="col-md-6"><label class="form-label text-white-50 small text-uppercase">Załączniki (pdf, jpg, png)</label><input type="file" ref="fileInputRef" @change="handleFileUpload" class="form-control bg-panel text-white-50 border-secondary"></div><div class="col-12"><label class="form-label text-white-50 small text-uppercase">Uzasadnienie / Dodatkowe dane *</label><textarea v-model="newDocDescription" class="form-control bg-panel text-white border-secondary" rows="3" placeholder="Opisz powód składania wniosku, podaj przedmioty warunkowe lub inne potrzebne informacje..."></textarea></div><div class="col-12 text-end mt-4 border-top border-secondary pt-3"><button @click="submitDocument" class="btn btn-success fw-bold px-5 text-dark" :disabled="!newDocType || !newDocDescription">Wyślij wniosek</button></div></div></div>
               <h5 class="fw-bold mb-3 text-white mt-5">Historia Twoich wniosków</h5>
-              <ul class="list-group shadow-sm"><li v-for="(req, index) in myRequests" :key="index" class="list-group-item bg-panel text-light py-4 border-secondary flex-column align-items-start"><div class="d-flex justify-content-between align-items-center w-100 mb-2"><span><strong class="text-white fs-5">{{ req.type }}</strong><span class="text-white-50 ms-3">{{ req.date }}</span></span><span class="badge px-3 py-2 fs-6" :class="req.status === 'Nowy' ? 'bg-warning text-dark' : (req.status === 'Zatwierdzony' ? 'bg-success' : 'bg-secondary')">{{ req.status }}</span></div><div class="text-white-50 mt-3 bg-dark p-3 rounded"><strong>Treść wniosku:</strong> {{ req.description }}<span v-if="req.attachment" class="d-block mt-2 badge bg-secondary px-2 py-1 fs-6">📎 Załącznik: {{ req.attachment }}</span></div></li><li v-if="myRequests.length === 0" class="list-group-item bg-panel text-white-50 text-center py-4 border-secondary">Nie składałeś jeszcze żadnych wniosków.</li></ul>
+              <ul class="list-group shadow-sm"><li v-for="req in myRequests" :key="req.id" class="list-group-item bg-panel text-light py-4 border-secondary flex-column align-items-start"><div class="d-flex justify-content-between align-items-center w-100 mb-2"><span><strong class="text-white fs-5">{{ req.type }}</strong><span class="text-white-50 ms-3">{{ req.date }}</span></span><span class="badge px-3 py-2 fs-6" :class="req.status === 'Nowy' ? 'bg-warning text-dark' : (req.status === 'Zatwierdzony' ? 'bg-success' : 'bg-secondary')">{{ req.status }}</span></div><div class="text-white-50 mt-3 bg-dark p-3 rounded"><strong>Treść wniosku:</strong> {{ req.description }}<span v-if="req.attachment" class="d-block mt-2 badge bg-secondary px-2 py-1 fs-6">📎 Załącznik: {{ req.attachment }}</span></div></li><li v-if="myRequests.length === 0" class="list-group-item bg-panel text-white-50 text-center py-4 border-secondary">Nie składałeś jeszcze żadnych wniosków.</li></ul>
             </div>
           </div>
         </div>
@@ -300,6 +297,7 @@ const sendChatMessage = () => { if (!chatInput.value.trim()) return; const userT
 const students = ref([]);
 const sharedGrades = ref([]);
 const sharedAttendance = ref([]);
+const sharedRequests = ref([]); // Dodano wnioski do chmury
 
 // Pobieranie początkowe z bazy online
 const fetchData = async () => {
@@ -311,6 +309,10 @@ const fetchData = async () => {
 
   const { data: att } = await supabase.from('attendance').select('*');
   if (att) sharedAttendance.value = att;
+  
+  // Pobieranie Wniosków
+  const { data: req } = await supabase.from('requests').select('*').order('id', { ascending: false });
+  if (req) sharedRequests.value = req;
 };
 
 // Nasłuchiwanie na zmiany u innych użytkowników (Multiplayer)
@@ -319,6 +321,7 @@ const subscribeRealtime = () => {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, fetchData)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'grades' }, fetchData)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, fetchData)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, fetchData)
     .subscribe();
 };
 
@@ -376,14 +379,9 @@ const baseSchedules = {
 const sharedSchedules = ref(JSON.parse(localStorage.getItem('coojons_schedules')) || baseSchedules);
 watch(sharedSchedules, (val) => localStorage.setItem('coojons_schedules', JSON.stringify(val)), { deep: true });
 
-
 const basePayments = [{ id: 1, studentId: '84932', title: 'Opłata za warunkowy wpis na semestr', amount: 800.00, status: 'Do zapłaty' }, { id: 2, studentId: '84932', title: 'Wydanie duplikatu legitymacji', amount: 33.00, status: 'Do zapłaty' }, { id: 3, studentId: '84933', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Do zapłaty' }, { id: 4, studentId: '84934', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Opłacone' }];
 const sharedPayments = ref(JSON.parse(localStorage.getItem('coojons_payments')) || basePayments);
 watch(sharedPayments, (val) => localStorage.setItem('coojons_payments', JSON.stringify(val)), { deep: true });
-
-const baseRequests = [{ studentId: '84932', student: 'Michał Kamiński', type: 'Wniosek o urlop dziekański', description: 'Powody osobiste', attachment: null, date: '10.04.2026', status: 'Zatwierdzony' }];
-const sharedRequests = ref(JSON.parse(localStorage.getItem('coojons_requests')) || baseRequests);
-watch(sharedRequests, (val) => localStorage.setItem('coojons_requests', JSON.stringify(val)), { deep: true });
 
 const baseNotifications = [{ studentId: '84932', msg: 'Zwróć książki do biblioteki przed końcem maja.' }];
 const sharedNotifications = ref(JSON.parse(localStorage.getItem('coojons_notifications')) || baseNotifications);
@@ -406,12 +404,13 @@ const newLesson = ref({ day: '', time: '', subject: '', room: '' });
 const addLesson = () => { if(newLesson.value.subject && newLesson.value.day){ if (!sharedSchedules.value[adminSelectedMajor.value]) { sharedSchedules.value[adminSelectedMajor.value] = []; } sharedSchedules.value[adminSelectedMajor.value].push({...newLesson.value}); newLesson.value = { day: '', time: '', subject: '', room: '' }; showFlash(`Zajęcia dodane do planu: ${adminSelectedMajor.value}!`); } };
 const removeLesson = (major, lesson) => { sharedSchedules.value[major] = sharedSchedules.value[major].filter(l => l !== lesson); };
 
-const myPayments = computed(() => sharedPayments.value.filter(p => p.studentId === user.value?.nrAlbumu));
+// POPRAWKA STRING() - GWARANCJA ŻE NR ALBUMU I ID ZAWSZE SIĘ ZGODZĄ
+const myPayments = computed(() => sharedPayments.value.filter(p => String(p.studentId) === String(user.value?.nrAlbumu)));
 const myGrades = computed(() => sharedGrades.value.filter(g => String(g.studentId) === String(user.value?.nrAlbumu)));
-const myRequests = computed(() => sharedRequests.value.filter(r => r.studentId === user.value?.nrAlbumu));
-const myNotifications = computed(() => sharedNotifications.value.filter(n => n.studentId === user.value?.nrAlbumu));
+const myRequests = computed(() => sharedRequests.value.filter(r => String(r.studentId) === String(user.value?.nrAlbumu)));
+const myNotifications = computed(() => sharedNotifications.value.filter(n => String(n.studentId) === String(user.value?.nrAlbumu)));
 const mySchedule = computed(() => { if (user.value && user.value.kierunek) { return sharedSchedules.value[user.value.kierunek] || []; } return []; });
-const myAttendance = computed(() => sharedAttendance.value.filter(a => String(a.studentId) === String(user.value?.nrAlbumu)));
+const myAttendance = computed(() => sharedAttendance.value.filter(a => String(a.studentId) === String(user.value?.nrAlbumu)).sort((a,b) => new Date(b.date) - new Date(a.date)));
 
 const unpaidCount = computed(() => myPayments.value.filter(p => p.status === 'Do zapłaty').length);
 const totalUnpaid = computed(() => myPayments.value.filter(p => p.status === 'Do zapłaty').reduce((sum, p) => sum + p.amount, 0));
@@ -429,7 +428,31 @@ const closePayment = () => { activePayment.value = null; paymentSuccess.value = 
 
 const newDocType = ref(''); const newDocDescription = ref(''); const newDocAttachment = ref(null); const fileInputRef = ref(null);
 const handleFileUpload = (event) => { const file = event.target.files[0]; if (file) { newDocAttachment.value = file.name; } else { newDocAttachment.value = null; } };
-const submitDocument = () => { if (!newDocType.value || !newDocDescription.value) return; sharedRequests.value.unshift({ studentId: user.value.nrAlbumu, student: user.value.name, type: newDocType.value, description: newDocDescription.value, attachment: newDocAttachment.value, date: new Date().toLocaleDateString('pl-PL'), status: 'Nowy' }); showFlash('Wniosek został poprawnie wygenerowany i przekazany do Dziekanatu.'); newDocType.value = ''; newDocDescription.value = ''; newDocAttachment.value = null; if(fileInputRef.value) fileInputRef.value.value = ''; };
+
+// ZGŁASZANIE WNIOSKU PRZEZ STUDENTA DO CHMURY
+const submitDocument = async () => { 
+  if (!newDocType.value || !newDocDescription.value) return; 
+  
+  const newReq = { 
+    studentId: user.value.nrAlbumu, 
+    student: user.value.name, 
+    type: newDocType.value, 
+    description: newDocDescription.value, 
+    attachment: newDocAttachment.value, 
+    date: new Date().toLocaleDateString('pl-PL'), 
+    status: 'Nowy' 
+  }; 
+  
+  const { error } = await supabase.from('requests').insert([newReq]);
+  if (!error) {
+    await fetchData(); // Odśwież natychmiast
+    showFlash('Wniosek został poprawnie wygenerowany i przekazany do Dziekanatu.'); 
+    newDocType.value = ''; 
+    newDocDescription.value = ''; 
+    newDocAttachment.value = null; 
+    if(fileInputRef.value) fileInputRef.value.value = ''; 
+  }
+};
 const downloadAttachment = (fileName) => { const content = `Symulacja pobranego załącznika: ${fileName}\n\n(Plik demonstracyjny systemu COOJONS)`; const blob = new Blob([content], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = fileName; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(link.href); showFlash(`Rozpoczęto pobieranie pliku: ${fileName}`); };
 
 const isEditing = ref(false); const currentStudent = ref({ imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }); const actionStudent = ref(null); const tempActionData = ref({ subject: '', grade: '5.0' });
@@ -454,7 +477,15 @@ const submitGrade = async () => {
 };
 const openMsgModal = (st) => { const msg = prompt(`Wiadomość dla: ${st.imie} ${st.nazwisko}`); if(msg) { sharedNotifications.value.push({ studentId: st.nrAlbumu, msg }); showFlash('Powiadomienie wysłane do studenta!'); } };
 const newNews = ref({ title: '', desc: '' }); const postNews = () => { if(newNews.value.title){ sharedNews.value.unshift({ date: 'Nowe', title: newNews.value.title, desc: newNews.value.desc }); newNews.value = { title: '', desc: '' }; showFlash('Ogłoszenie opublikowane!'); } };
-const resolveRequest = (index, newStatus) => { sharedRequests.value[index].status = newStatus; showFlash(`Status wniosku zmieniono na: ${newStatus}`); };
+
+// ZMIANA STATUSU WNIOSKU PRZEZ DZIEKANAT W CHMURZE
+const resolveRequest = async (reqId, newStatus) => { 
+  const { error } = await supabase.from('requests').update({ status: newStatus }).eq('id', reqId);
+  if (!error) {
+    await fetchData(); // Odśwież natychmiast
+    showFlash(`Status wniosku zmieniono na: ${newStatus}`); 
+  }
+};
 const showFlash = (msg) => { flashMessage.value = msg; setTimeout(() => flashMessage.value = '', 4000); };
 
 const isEditingLecturer = ref(false);
@@ -490,11 +521,11 @@ const saveLecturerGrade = async (student) => {
   }
 };
 
-const getAttendanceStatus = (studentId) => { const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); return record ? record.status : null; };
+const getAttendanceStatus = (studentId) => { const record = sharedAttendance.value.find(a => String(a.studentId) === String(studentId) && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); return record ? record.status : null; };
 
 // Wykładowca Wystawia Frekwencje (CHMURA)
 const markAttendance = async (studentId, status) => { 
-  const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); 
+  const record = sharedAttendance.value.find(a => String(a.studentId) === String(studentId) && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); 
   
   if (record) { 
     // Prosta symulacja updatu - dla Supabase musimy celować po konkretnych parametrach, jesli nie mamy ID
