@@ -98,7 +98,7 @@
             <div v-if="activeTabLecturer === 'oceny'">
               <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Dziennik Ocen - Wstawianie</h3>
               <div class="card bg-panel mb-4 border-0 shadow-sm"><div class="card-body"><h6 class="text-white-50 mb-3">Wybierz przedmiot, dla którego chcesz wystawić oceny:</h6><select v-model="selectedSubjectLecturer" class="form-select bg-dark text-white border-info w-50"><option disabled value="">-- Wybierz przedmiot --</option><option v-for="sub in user.subjects" :key="sub" :value="sub">{{ sub }}</option></select></div></div>
-              <div v-if="selectedSubjectLecturer" class="card bg-panel shadow-sm border-0"><div class="card-body p-0"><table class="table table-dark table-hover align-middle mb-0 custom-table"><thead><tr><th class="ps-4 text-white-50">Nr Albumu</th><th class="text-white-50">Nazwisko i Imię</th><th class="text-white-50">Kierunek</th><th class="text-end pe-4 text-white-50">Wystaw Ocenę</th></tr></thead><tbody><tr v-for="student in studentsForLecturerSubject" :key="student.id"><td class="ps-4 text-white">{{ student.nrAlbumu }}</td><td class="fw-bold text-white">{{ student.nazwisko }} {{ student.imie }}</td><td><span class="badge bg-secondary">{{ student.kierunek }}</span></td><td class="text-end pe-4"><div class="d-flex justify-content-end align-items-center gap-2"><select v-model="tempLecturerGrades[student.nrAlbumu]" class="form-select form-select-sm bg-dark text-white border-secondary" style="width: 100px;"><option value="5.0">5.0</option><option value="4.5">4.5</option><option value="4.0">4.0</option><option value="3.5">3.5</option><option value="3.0">3.0</option><option value="2.0">2.0</option></select><button @click="saveLecturerGrade(student)" class="btn btn-sm btn-success fw-bold">Zapisz</button></div></td></tr><tr v-if="studentsForLecturerSubject.length === 0"><td colspan="4" class="text-center py-4 text-white-50">Żaden student nie jest zapisany na ten przedmiot.</td></tr></tbody></table></div></div>
+              <div v-if="selectedSubjectLecturer" class="card bg-panel shadow-sm border-0"><div class="card-body p-0"><table class="table table-dark table-hover align-middle mb-0 custom-table"><thead><tr><th class="ps-4 text-white-50">Nr Albumu</th><th class="text-white-50">Nazwisko i Imię</th><th class="text-white-50">Kierunek</th><th class="text-end pe-4 text-white-50">Wystaw Ocenę</th></tr></thead><tbody><tr v-for="student in studentsForLecturerSubject" :key="student.id"><td class="ps-4 text-white">{{ student.nrAlbumu }}</td><td class="fw-bold text-white">{{ student.nazwisko }} {{ student.imie }}</td><td><span class="badge bg-secondary">{{ student.kierunek }}</span></td><td class="text-end pe-4"><div class="d-flex justify-content-end align-items-center gap-2"><select v-model="tempLecturerGrades[student.nrAlbumu]" class="form-select form-select-sm bg-dark text-white border-secondary" style="width: 100px;"><option value="5.0">5.0</option><option value="4.5">4.5</option><option value="4.0">4.0</option><option value="3.5">3.5</option><option value="3.0">3.0</option><option value="2.0">2.0</option></select><button @click="saveLecturerGrade(student)" class="btn btn-sm btn-success fw-bold">Zapisz w Chmurze</button></div></td></tr><tr v-if="studentsForLecturerSubject.length === 0"><td colspan="4" class="text-center py-4 text-white-50">Żaden student nie jest zapisany na ten przedmiot.</td></tr></tbody></table></div></div>
             </div>
             <div v-if="activeTabLecturer === 'obecnosc'">
               <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Lista Obecności (Frekwencja)</h3>
@@ -109,9 +109,9 @@
 
           <div v-if="user.role === 'dziekanat'">
             <div v-if="activeTabAdmin === 'statystyki'">
-              <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Pulpit Analityczny (Live Data)</h3>
+              <h3 class="fw-bold text-white border-bottom border-secondary pb-3 mb-4">Pulpit Analityczny (W Chmurze)</h3>
               <div class="row g-4 mb-4"><div class="col-md-3"><div class="card bg-panel border-0 p-4 text-center"><h6 class="text-white-50 text-uppercase">Aktywni Studenci</h6><h2 class="text-white fw-bold mb-0">{{ students.length }}</h2></div></div><div class="col-md-3"><div class="card bg-panel border-0 p-4 text-center"><h6 class="text-white-50 text-uppercase">Wnioski (Oczekujące)</h6><h2 class="text-warning fw-bold mb-0">{{ newRequestsCount }}</h2></div></div><div class="col-md-3"><div class="card bg-panel border-0 p-4 text-center"><h6 class="text-white-50 text-uppercase">Zaległości finansowe</h6><h2 class="text-danger fw-bold mb-0">{{ totalUnpaidAdmin.toFixed(2) }} PLN</h2></div></div><div class="col-md-3"><div class="card bg-panel border-0 p-4 text-center"><h6 class="text-white-50 text-uppercase">Wydane Legitymacje</h6><h2 class="text-success fw-bold mb-0">{{ students.length > 0 ? 100 : 0 }}%</h2></div></div></div>
-              <div class="row g-4"><div class="col-md-6"><div class="card bg-panel border-0 p-4 h-100"><h5 class="text-white fw-bold mb-4">Status finansów studentów</h5><div class="d-flex align-items-center justify-content-center h-100"><div class="css-pie-chart shadow-sm position-relative d-flex justify-content-center align-items-center" :style="{ background: `conic-gradient(#198754 0% ${financePaidPercent}%, #dc3545 ${financePaidPercent}% 100%)` }"><div class="inner-circle bg-panel rounded-circle" style="width: 70%; height: 70%;"></div><h4 class="position-absolute text-white fw-bold m-0">{{ financePaidPercent }}%</h4></div><div class="ms-5"><div class="d-flex align-items-center mb-2"><span class="badge bg-success me-2 p-2"></span><span class="text-white-50">Opłacone czesne ({{ financePaidPercent }}%)</span></div><div class="d-flex align-items-center"><span class="badge bg-danger me-2 p-2"></span><span class="text-white-50">Zaległości ({{ financeUnpaidPercent }}%)</span></div></div></div></div></div><div class="col-md-6"><div class="card bg-panel border-0 p-4 h-100"><h5 class="text-white fw-bold mb-4">Średnia ocen na wydziale</h5><div v-for="(fg, index) in facultyGrades" :key="index" class="mb-3"><div class="d-flex justify-content-between text-white-50 mb-1"><small>{{ fg.subject }}</small><small>{{ fg.avg }}</small></div><div class="progress" style="height: 10px; background-color: #2d2e36;"><div class="progress-bar" :class="fg.avg >= 4 ? 'bg-success' : (fg.avg >= 3 ? 'bg-warning' : 'bg-danger')" :style="{ width: fg.percent + '%' }"></div></div></div><div v-if="facultyGrades.length === 0" class="text-white-50 small text-center py-4">Brak ocen w systemie. Dodaj ocenę studentowi, aby wygenerować wykres.</div></div></div></div>
+              <div class="row g-4"><div class="col-md-6"><div class="card bg-panel border-0 p-4 h-100"><h5 class="text-white fw-bold mb-4">Status finansów studentów</h5><div class="d-flex align-items-center justify-content-center h-100"><div class="css-pie-chart shadow-sm position-relative d-flex justify-content-center align-items-center" :style="{ background: `conic-gradient(#198754 0% ${financePaidPercent}%, #dc3545 ${financePaidPercent}% 100%)` }"><div class="inner-circle bg-panel rounded-circle" style="width: 70%; height: 70%;"></div><h4 class="position-absolute text-white fw-bold m-0">{{ financePaidPercent }}%</h4></div><div class="ms-5"><div class="d-flex align-items-center mb-2"><span class="badge bg-success me-2 p-2"></span><span class="text-white-50">Opłacone czesne ({{ financePaidPercent }}%)</span></div><div class="d-flex align-items-center"><span class="badge bg-danger me-2 p-2"></span><span class="text-white-50">Zaległości ({{ financeUnpaidPercent }}%)</span></div></div></div></div></div><div class="col-md-6"><div class="card bg-panel border-0 p-4 h-100"><h5 class="text-white fw-bold mb-4">Średnia ocen na wydziale</h5><div v-for="(fg, index) in facultyGrades" :key="index" class="mb-3"><div class="d-flex justify-content-between text-white-50 mb-1"><small>{{ fg.subject }}</small><small>{{ fg.avg }}</small></div><div class="progress" style="height: 10px; background-color: #2d2e36;"><div class="progress-bar" :class="fg.avg >= 4 ? 'bg-success' : (fg.avg >= 3 ? 'bg-warning' : 'bg-danger')" :style="{ width: fg.percent + '%' }"></div></div></div><div v-if="facultyGrades.length === 0" class="text-white-50 small text-center py-4">Brak ocen w chmurze. Dodaj ocenę studentowi, aby wygenerować wykres.</div></div></div></div>
             </div>
 
             <div v-if="activeTabAdmin === 'wykladowcy'">
@@ -121,10 +121,10 @@
             </div>
 
             <div v-if="activeTabAdmin === 'studenci'">
-              <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4"><h3 class="mb-0 fw-bold text-white">Lista Studentów - Zarządzanie</h3><button @click="isEditing = !isEditing" class="btn btn-primary rounded-3 px-4 py-2 text-dark fw-bold">{{ isEditing ? 'Anuluj dodawanie' : '+ DODAJ STUDENTA' }}</button></div>
-              <div v-if="isEditing" class="card bg-panel mb-4 shadow-sm border-0"><div class="card-body"><form @submit.prevent="saveStudent"><div class="row g-3 align-items-end"><div class="col-md-2"><label class="text-white-50 small">Imię</label><input v-model="currentStudent.imie" type="text" class="form-control bg-dark text-light border-secondary" required></div><div class="col-md-2"><label class="text-white-50 small">Nazwisko</label><input v-model="currentStudent.nazwisko" type="text" class="form-control bg-dark text-light border-secondary" required></div><div class="col-md-2"><label class="text-white-50 small">Nr Albumu</label><input v-model="currentStudent.nrAlbumu" type="text" class="form-control bg-dark text-light border-secondary" required></div><div class="col-md-2"><label class="text-white-50 small">Kierunek</label><select v-model="currentStudent.kierunek" class="form-select bg-dark text-light border-secondary" required><option value="Informatyka">Informatyka</option><option value="Ekonomia">Ekonomia</option><option value="Pielęgniarstwo">Pielęgniarstwo</option></select></div><div class="col-md-2"><label class="text-info small fw-bold">Login konta</label><input v-model="currentStudent.login" type="text" class="form-control bg-dark text-info border-info" placeholder="jkowalski" required></div><div class="col-md-2"><label class="text-info small fw-bold">Hasło startowe</label><input v-model="currentStudent.password" type="text" class="form-control bg-dark text-info border-info" placeholder="123" required></div><div class="col-12 text-end mt-3"><button type="submit" class="btn btn-success fw-bold px-5 text-dark">Zapisz i Utwórz Konto</button></div></div></form></div></div>
-              <div class="card bg-panel shadow-sm border-0"><div class="card-body p-0"><table class="table table-dark table-hover align-middle mb-0 custom-table"><thead><tr><th class="ps-4 text-white-50">ID INDEKSU</th><th class="text-white-50">NAZWISKO I IMIĘ</th><th class="text-white-50">KIERUNEK</th><th class="text-white-50 text-center">LOGIN KONTA</th><th class="text-end pe-4 text-white-50">ZARZĄDZAJ</th></tr></thead><tbody><tr v-for="student in students" :key="student.id"><td class="ps-4 text-white">{{ student.nrAlbumu }}</td><td class="fw-semibold text-white">{{ student.imie }} {{ student.nazwisko }}</td><td class="text-white-50"><span class="badge bg-secondary">{{ student.kierunek || 'Brak' }}</span></td><td class="text-center text-info font-monospace">{{ student.login || 'Brak (Baza zewn.)' }}</td><td class="text-end pe-4"><button @click="openGradeModal(student)" class="btn btn-sm btn-outline-warning me-2" title="Wstaw Ocenę">⭐</button><button @click="openMsgModal(student)" class="btn btn-sm btn-outline-info me-2" title="Wyślij Powiadomienie">✉️</button><button @click="deleteStudent(student)" class="btn btn-sm btn-outline-danger" title="Skreśl">🗑️</button></td></tr><tr v-if="students.length === 0"><td colspan="5" class="text-center py-4 text-white-50">Baza jest pusta. Dodaj studenta.</td></tr></tbody></table></div></div>
-              <div v-if="actionStudent" class="card bg-dark border-warning mt-4 shadow"><div class="card-body"><h5 class="text-warning mb-3">Wystaw ocenę dla: {{ actionStudent.imie }} {{ actionStudent.nazwisko }} ({{ actionStudent.kierunek }})</h5><div class="d-flex gap-3"><select v-model="tempActionData.subject" class="form-select bg-panel text-white border-secondary w-50"><option disabled value="">Wybierz przedmiot z listy przypisanej do kierunku...</option><option v-for="sub in studentSpecificSubjects" :key="sub" :value="sub">{{ sub }}</option></select><select v-model="tempActionData.grade" class="form-select bg-panel text-white border-secondary" style="width: 150px;"><option value="5.0">5.0 (Bdb)</option><option value="4.5">4.5 (Bdb-)</option><option value="4.0">4.0 (Db)</option><option value="3.5">3.5 (Dst+)</option><option value="3.0">3.0 (Dst)</option><option value="2.0">2.0 (Ndst)</option></select><button @click="submitGrade" class="btn btn-warning fw-bold text-dark px-4" :disabled="!tempActionData.subject">Zapisz Ocenę</button><button @click="actionStudent = null" class="btn btn-outline-secondary">Anuluj</button></div></div></div>
+              <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4"><h3 class="mb-0 fw-bold text-white">Lista Studentów (Baza Supabase)</h3><button @click="isEditing = !isEditing" class="btn btn-primary rounded-3 px-4 py-2 text-dark fw-bold">{{ isEditing ? 'Anuluj dodawanie' : '+ DODAJ STUDENTA' }}</button></div>
+              <div v-if="isEditing" class="card bg-panel mb-4 shadow-sm border-0"><div class="card-body"><form @submit.prevent="saveStudent"><div class="row g-3 align-items-end"><div class="col-md-2"><label class="text-white-50 small">Imię</label><input v-model="currentStudent.imie" type="text" class="form-control bg-dark text-light border-secondary" required></div><div class="col-md-2"><label class="text-white-50 small">Nazwisko</label><input v-model="currentStudent.nazwisko" type="text" class="form-control bg-dark text-light border-secondary" required></div><div class="col-md-2"><label class="text-white-50 small">Nr Albumu</label><input v-model="currentStudent.nrAlbumu" type="text" class="form-control bg-dark text-light border-secondary" required></div><div class="col-md-2"><label class="text-white-50 small">Kierunek</label><select v-model="currentStudent.kierunek" class="form-select bg-dark text-light border-secondary" required><option value="Informatyka">Informatyka</option><option value="Ekonomia">Ekonomia</option><option value="Pielęgniarstwo">Pielęgniarstwo</option></select></div><div class="col-md-2"><label class="text-info small fw-bold">Login konta</label><input v-model="currentStudent.login" type="text" class="form-control bg-dark text-info border-info" placeholder="jkowalski" required></div><div class="col-md-2"><label class="text-info small fw-bold">Hasło startowe</label><input v-model="currentStudent.password" type="text" class="form-control bg-dark text-info border-info" placeholder="123" required></div><div class="col-12 text-end mt-3"><button type="submit" class="btn btn-success fw-bold px-5 text-dark">Zapisz do Chmury</button></div></div></form></div></div>
+              <div class="card bg-panel shadow-sm border-0"><div class="card-body p-0"><table class="table table-dark table-hover align-middle mb-0 custom-table"><thead><tr><th class="ps-4 text-white-50">ID INDEKSU</th><th class="text-white-50">NAZWISKO I IMIĘ</th><th class="text-white-50">KIERUNEK</th><th class="text-white-50 text-center">LOGIN KONTA</th><th class="text-end pe-4 text-white-50">ZARZĄDZAJ</th></tr></thead><tbody><tr v-for="student in students" :key="student.id"><td class="ps-4 text-white">{{ student.nrAlbumu }}</td><td class="fw-semibold text-white">{{ student.imie }} {{ student.nazwisko }}</td><td class="text-white-50"><span class="badge bg-secondary">{{ student.kierunek || 'Brak' }}</span></td><td class="text-center text-info font-monospace">{{ student.login }}</td><td class="text-end pe-4"><button @click="openGradeModal(student)" class="btn btn-sm btn-outline-warning me-2" title="Wstaw Ocenę">⭐</button><button @click="openMsgModal(student)" class="btn btn-sm btn-outline-info me-2" title="Wyślij Powiadomienie">✉️</button><button @click="deleteStudent(student)" class="btn btn-sm btn-outline-danger" title="Skreśl">🗑️</button></td></tr><tr v-if="students.length === 0"><td colspan="5" class="text-center py-4 text-white-50">Baza w chmurze jest pusta. Dodaj studentów.</td></tr></tbody></table></div></div>
+              <div v-if="actionStudent" class="card bg-dark border-warning mt-4 shadow"><div class="card-body"><h5 class="text-warning mb-3">Wystaw ocenę dla: {{ actionStudent.imie }} {{ actionStudent.nazwisko }} ({{ actionStudent.kierunek }})</h5><div class="d-flex gap-3"><select v-model="tempActionData.subject" class="form-select bg-panel text-white border-secondary w-50"><option disabled value="">Wybierz przedmiot z listy przypisanej do kierunku...</option><option v-for="sub in studentSpecificSubjects" :key="sub" :value="sub">{{ sub }}</option></select><select v-model="tempActionData.grade" class="form-select bg-panel text-white border-secondary" style="width: 150px;"><option value="5.0">5.0 (Bdb)</option><option value="4.5">4.5 (Bdb-)</option><option value="4.0">4.0 (Db)</option><option value="3.5">3.5 (Dst+)</option><option value="3.0">3.0 (Dst)</option><option value="2.0">2.0 (Ndst)</option></select><button @click="submitGrade" class="btn btn-warning fw-bold text-dark px-4" :disabled="!tempActionData.subject">Zapisz do Chmury</button><button @click="actionStudent = null" class="btn btn-outline-secondary">Anuluj</button></div></div></div>
             </div>
             
             <div v-if="activeTabAdmin === 'wnioski'">
@@ -233,12 +233,12 @@
             </div>
 
             <div v-if="activeTab === 'oceny'">
-              <h4 class="fw-bold mb-3 text-white">Twoje zestawienie ocen</h4>
+              <h4 class="fw-bold mb-3 text-white">Twoje zestawienie ocen (Dane z Chmury)</h4>
               <div class="card bg-panel shadow-sm border-0"><table class="table table-dark align-middle mb-0 custom-table"><thead><tr><th class="ps-4 text-white-50">Przedmiot</th><th class="text-white-50">Data wpisu</th><th class="text-end pe-4 text-white-50">Ocena</th></tr></thead><tbody><tr v-for="(grade, index) in myGrades" :key="index"><td class="ps-4 text-white">{{ grade.subject }}</td><td class="text-white-50">{{ grade.date }}</td><td class="text-end pe-4 fw-bold text-success">{{ grade.grade }}</td></tr><tr v-if="myGrades.length === 0"><td colspan="3" class="text-center py-4 text-white-50">Nie masz jeszcze żadnych wpisanych ocen w systemie.</td></tr></tbody></table></div>
             </div>
 
             <div v-if="activeTab === 'obecnosc'">
-              <h4 class="fw-bold mb-3 text-white">Twoja Frekwencja na zajęciach</h4>
+              <h4 class="fw-bold mb-3 text-white">Twoja Frekwencja na zajęciach (Dane z Chmury)</h4>
               <div class="card bg-panel shadow-sm border-0"><table class="table table-dark align-middle mb-0 custom-table"><thead><tr><th class="ps-4 text-white-50">Data zajęć</th><th class="text-white-50">Przedmiot</th><th class="text-end pe-4 text-white-50">Status</th></tr></thead><tbody><tr v-for="(att, index) in myAttendance" :key="index"><td class="ps-4 text-white-50">{{ att.date }}</td><td class="text-white fw-bold">{{ att.subject }}</td><td class="text-end pe-4"><span class="badge px-3 py-2" :class="att.status === 'Obecny' ? 'bg-success' : (att.status === 'Nieobecny' ? 'bg-danger' : 'bg-warning text-dark')">{{ att.status }}</span></td></tr><tr v-if="myAttendance.length === 0"><td colspan="3" class="text-center py-4 text-white-50">Brak zarejestrowanych wpisów frekwencji w tym semestrze.</td></tr></tbody></table></div>
             </div>
 
@@ -269,10 +269,15 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 
+// ---------------------------------------------------------
+// 1. SUPABASE IMPORT 
+// ---------------------------------------------------------
+import { supabase } from './supabase.js';
+
 const globalFontSize = ref(15);
 const user = ref(null);
 const loginForm = ref({ username: '', password: '' });
-const loginError = ref(false); // NOWOŚĆ: Przełącznik błędu logowania
+const loginError = ref(false); 
 const activeTab = ref('pulpit');
 const activeTabAdmin = ref('statystyki');
 const activeTabLecturer = ref('pulpit');
@@ -281,8 +286,6 @@ const isGoogleLoading = ref(false);
 
 const currentTime = ref('');
 let timerInterval;
-onMounted(() => { timerInterval = setInterval(() => { currentTime.value = new Date().toLocaleTimeString('pl-PL'); }, 1000); });
-onUnmounted(() => { clearInterval(timerInterval); });
 
 const isChatOpen = ref(false);
 const chatInput = ref('');
@@ -291,25 +294,46 @@ const chatMessages = ref([{ sender: 'bot', text: 'Cześć! Jestem Twoim wirtualn
 const sendChatMessage = () => { if (!chatInput.value.trim()) return; const userText = chatInput.value; chatMessages.value.push({ sender: 'user', text: userText }); chatInput.value = ''; isBotTyping.value = true; setTimeout(() => { isBotTyping.value = false; let reply = "Więcej informacji znajdziesz na stronie głównej Uczelni lub w Dziekanacie."; const lower = userText.toLowerCase(); if (lower.includes('stypend') || lower.includes('wniosek')) reply = "Wnioski o stypendium złożysz w zakładce 'e-Wnioski'. Pamiętaj o uzasadnieniu!"; else if (lower.includes('płatnoś') || lower.includes('zapła') || lower.includes('blik')) reply = "Wszelkie opłaty uregulujesz w zakładce 'Płatności' za pomocą BLIK lub Apple Pay."; else if (lower.includes('legitymacj')) reply = "Twoja cyfrowa mLegitymacja dostępna jest w nowej zakładce w menu po lewej stronie."; else if (lower.includes('plan')) reply = "Twój plan zajęć znajduje się w zakładce 'Mój Plan'."; chatMessages.value.push({ sender: 'bot', text: reply }); }, 1000); };
 
 // =========================================================================
-// NOWOŚĆ: BAZY DANYCH W CZASIE RZECZYWISTYM (REAL-TIME LOCAL STORAGE)
+// REAL-TIME SUPABASE (CHMURA)
 // =========================================================================
 
-// 1. STUDENCI
-const baseStudents = [
-  { id: 1, imie: 'Michał', nazwisko: 'Kamiński', nrAlbumu: '84932', login: 'michal', password: '123', kierunek: 'Informatyka' },
-  { id: 2, imie: 'Krzysztof', nazwisko: 'Krawczyk', nrAlbumu: '84940', login: 'krzysztof', password: '123', kierunek: 'Informatyka' },
-  { id: 3, imie: 'Adam', nazwisko: 'Małysz', nrAlbumu: '84941', login: 'adam', password: '123', kierunek: 'Informatyka' },
-  { id: 4, imie: 'Anna', nazwisko: 'Zielińska', nrAlbumu: '84933', login: 'anna', password: '123', kierunek: 'Ekonomia' },
-  { id: 5, imie: 'Maria', nazwisko: 'Skłodowska', nrAlbumu: '84942', login: 'maria', password: '123', kierunek: 'Ekonomia' },
-  { id: 6, imie: 'Jan', nazwisko: 'Paweł', nrAlbumu: '84943', login: 'jan', password: '123', kierunek: 'Ekonomia' },
-  { id: 7, imie: 'Piotr', nazwisko: 'Nowak', nrAlbumu: '84934', login: 'piotr', password: '123', kierunek: 'Pielęgniarstwo' },
-  { id: 8, imie: 'Ewa', nazwisko: 'Kopacz', nrAlbumu: '84945', login: 'ewa', password: '123', kierunek: 'Pielęgniarstwo' },
-  { id: 9, imie: 'Florence', nazwisko: 'Nightingale', nrAlbumu: '84944', login: 'florence', password: '123', kierunek: 'Pielęgniarstwo' }
-];
-const students = ref(JSON.parse(localStorage.getItem('coojons_students')) || baseStudents);
-watch(students, (val) => localStorage.setItem('coojons_students', JSON.stringify(val)), { deep: true });
+const students = ref([]);
+const sharedGrades = ref([]);
+const sharedAttendance = ref([]);
 
-// 2. WYKŁADOWCY
+// Pobieranie początkowe z bazy online
+const fetchData = async () => {
+  const { data: st } = await supabase.from('students').select('*');
+  if (st) students.value = st;
+
+  const { data: gr } = await supabase.from('grades').select('*');
+  if (gr) sharedGrades.value = gr;
+
+  const { data: att } = await supabase.from('attendance').select('*');
+  if (att) sharedAttendance.value = att;
+};
+
+// Nasłuchiwanie na zmiany u innych użytkowników (Multiplayer)
+const subscribeRealtime = () => {
+  supabase.channel('public-db-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, fetchData)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'grades' }, fetchData)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, fetchData)
+    .subscribe();
+};
+
+onMounted(() => { 
+  timerInterval = setInterval(() => { currentTime.value = new Date().toLocaleTimeString('pl-PL'); }, 1000); 
+  fetchData();
+  subscribeRealtime();
+});
+
+onUnmounted(() => { clearInterval(timerInterval); });
+
+// =========================================================================
+// LOKALNA PAMIĘĆ (Dla reszty mniej ważnych danych by nie obciążać bazy)
+// =========================================================================
+
 const baseLecturers = [
   { id: 1, name: 'Dr inż. Adam Nowak', login: 'anowak', password: '123', subjects: ['Inżynieria Oprogramowania', 'Bazy Danych SQL', 'Algorytmy i Struktury Danych'] },
   { id: 2, name: 'Prof. Maria Wiśniewska', login: 'mwisniewska', password: '123', subjects: ['Mikroekonomia', 'Rachunkowość Zarządcza', 'Finanse Przedsiębiorstw', 'Statystyka'] },
@@ -321,7 +345,6 @@ const baseLecturers = [
 const lecturers = ref(JSON.parse(localStorage.getItem('coojons_lecturers')) || baseLecturers);
 watch(lecturers, (val) => localStorage.setItem('coojons_lecturers', JSON.stringify(val)), { deep: true });
 
-// 3. PLAN ZAJĘĆ
 const baseSchedules = {
   'Informatyka': [
     { day: 'Poniedziałek', time: '08:00 - 09:30', subject: 'Inżynieria Oprogramowania', room: 'Aula B' }, 
@@ -353,22 +376,6 @@ const baseSchedules = {
 const sharedSchedules = ref(JSON.parse(localStorage.getItem('coojons_schedules')) || baseSchedules);
 watch(sharedSchedules, (val) => localStorage.setItem('coojons_schedules', JSON.stringify(val)), { deep: true });
 
-// 4. OCENY, PŁATNOŚCI, OBECNOŚCI
-const baseGrades = [
-  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '04.04.2026', grade: '4.0' }, { studentId: '84932', subject: 'Bazy Danych SQL', date: '15.04.2026', grade: '4.5' }, { studentId: '84940', subject: 'Algorytmy i Struktury Danych', date: '18.04.2026', grade: '3.0' }, { studentId: '84941', subject: 'Inżynieria Oprogramowania', date: '04.04.2026', grade: '5.0' }, { studentId: '84941', subject: 'Język Angielski', date: '25.04.2026', grade: '4.5' }, 
-  { studentId: '84933', subject: 'Mikroekonomia', date: '07.04.2026', grade: '5.0' }, { studentId: '84933', subject: 'Statystyka', date: '21.04.2026', grade: '4.5' }, { studentId: '84942', subject: 'Finanse Przedsiębiorstw', date: '14.04.2026', grade: '3.5' }, { studentId: '84943', subject: 'Prawo Gospodarcze', date: '20.04.2026', grade: '4.0' }, 
-  { studentId: '84934', subject: 'Anatomia Prawidłowa', date: '06.04.2026', grade: '3.5' }, { studentId: '84934', subject: 'Fizjologia', date: '22.04.2026', grade: '4.0' }, { studentId: '84945', subject: 'Farmakologia', date: '15.04.2026', grade: '3.0' }, { studentId: '84944', subject: 'Podstawy Pielęgniarstwa', date: '18.04.2026', grade: '5.0' }
-];
-const sharedGrades = ref(JSON.parse(localStorage.getItem('coojons_grades')) || baseGrades);
-watch(sharedGrades, (val) => localStorage.setItem('coojons_grades', JSON.stringify(val)), { deep: true });
-
-const baseAttendance = [
-  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-06', status: 'Obecny' }, { studentId: '84932', subject: 'Bazy Danych SQL', date: '2026-04-08', status: 'Spóźniony' }, { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-13', status: 'Nieobecny' }, { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-20', status: 'Obecny' },
-  { studentId: '84933', subject: 'Mikroekonomia', date: '2026-04-07', status: 'Obecny' }, { studentId: '84933', subject: 'Statystyka', date: '2026-04-15', status: 'Obecny' },
-  { studentId: '84934', subject: 'Anatomia Prawidłowa', date: '2026-04-06', status: 'Obecny' }, { studentId: '84934', subject: 'Farmakologia', date: '2026-04-16', status: 'Nieobecny' }, { studentId: '84934', subject: 'Fizjologia', date: '2026-04-21', status: 'Obecny' }
-];
-const sharedAttendance = ref(JSON.parse(localStorage.getItem('coojons_attendance')) || baseAttendance);
-watch(sharedAttendance, (val) => localStorage.setItem('coojons_attendance', JSON.stringify(val)), { deep: true });
 
 const basePayments = [{ id: 1, studentId: '84932', title: 'Opłata za warunkowy wpis na semestr', amount: 800.00, status: 'Do zapłaty' }, { id: 2, studentId: '84932', title: 'Wydanie duplikatu legitymacji', amount: 33.00, status: 'Do zapłaty' }, { id: 3, studentId: '84933', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Do zapłaty' }, { id: 4, studentId: '84934', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Opłacone' }];
 const sharedPayments = ref(JSON.parse(localStorage.getItem('coojons_payments')) || basePayments);
@@ -428,7 +435,22 @@ const downloadAttachment = (fileName) => { const content = `Symulacja pobranego 
 const isEditing = ref(false); const currentStudent = ref({ imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }); const actionStudent = ref(null); const tempActionData = ref({ subject: '', grade: '5.0' });
 const studentSpecificSubjects = computed(() => { const subs = new Set(['Język Angielski', 'BHP']); if (actionStudent.value?.kierunek && sharedSchedules.value[actionStudent.value.kierunek]) { sharedSchedules.value[actionStudent.value.kierunek].forEach(l => subs.add(l.subject)); } return Array.from(subs).sort(); });
 const openGradeModal = (st) => { actionStudent.value = st; };
-const submitGrade = () => { if(tempActionData.value.subject){ sharedGrades.value.push({ studentId: actionStudent.value.nrAlbumu, subject: tempActionData.value.subject, grade: tempActionData.value.grade, date: new Date().toLocaleDateString('pl-PL') }); showFlash(`Oceniono studenta ${actionStudent.value.imie}!`); actionStudent.value = null; tempActionData.value.subject = ''; } };
+
+// Dziekanat Wystawia Ocenę (CHMURA)
+const submitGrade = async () => { 
+  if(tempActionData.value.subject){ 
+    const newGrade = { studentId: actionStudent.value.nrAlbumu, subject: tempActionData.value.subject, grade: tempActionData.value.grade, date: new Date().toLocaleDateString('pl-PL') };
+    
+    // Zapis do Supabase
+    const { error } = await supabase.from('grades').insert([newGrade]);
+    
+    if(!error) {
+      showFlash(`Oceniono studenta w chmurze: ${actionStudent.value.imie}!`); 
+      actionStudent.value = null; 
+      tempActionData.value.subject = ''; 
+    }
+  } 
+};
 const openMsgModal = (st) => { const msg = prompt(`Wiadomość dla: ${st.imie} ${st.nazwisko}`); if(msg) { sharedNotifications.value.push({ studentId: st.nrAlbumu, msg }); showFlash('Powiadomienie wysłane do studenta!'); } };
 const newNews = ref({ title: '', desc: '' }); const postNews = () => { if(newNews.value.title){ sharedNews.value.unshift({ date: 'Nowe', title: newNews.value.title, desc: newNews.value.desc }); newNews.value = { title: '', desc: '' }; showFlash('Ogłoszenie opublikowane!'); } };
 const resolveRequest = (index, newStatus) => { sharedRequests.value[index].status = newStatus; showFlash(`Status wniosku zmieniono na: ${newStatus}`); };
@@ -451,17 +473,39 @@ const studentsForLecturerSubject = computed(() => {
   const validMajors = Object.keys(sharedSchedules.value).filter(major => sharedSchedules.value[major].some(lesson => lesson.subject === selectedSubjectLecturer.value));
   return students.value.filter(s => validMajors.includes(s.kierunek));
 });
-const saveLecturerGrade = (student) => {
-  const grade = tempLecturerGrades.value[student.nrAlbumu]; if (!grade) { showFlash('Wybierz ocenę!'); return; }
-  sharedGrades.value.push({ studentId: student.nrAlbumu, subject: selectedSubjectLecturer.value, grade: grade, date: new Date().toLocaleDateString('pl-PL') });
-  showFlash(`Wystawiono ocenę ${grade} studentowi: ${student.imie} ${student.nazwisko}`); tempLecturerGrades.value[student.nrAlbumu] = null; 
+
+// Wykładowca wystawia Ocenę (CHMURA)
+const saveLecturerGrade = async (student) => {
+  const grade = tempLecturerGrades.value[student.nrAlbumu]; 
+  if (!grade) { showFlash('Wybierz ocenę!'); return; }
+  
+  const newGrade = { studentId: student.nrAlbumu, subject: selectedSubjectLecturer.value, grade: grade, date: new Date().toLocaleDateString('pl-PL') };
+  
+  const { error } = await supabase.from('grades').insert([newGrade]);
+  if(!error) {
+    showFlash(`Wystawiono ocenę w chmurze studentowi: ${student.imie} ${student.nazwisko}`); 
+    tempLecturerGrades.value[student.nrAlbumu] = null; 
+  }
 };
+
 const getAttendanceStatus = (studentId) => { const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); return record ? record.status : null; };
-const markAttendance = (studentId, status) => { const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); if (record) { record.status = status; } else { sharedAttendance.value.push({ studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value, status }); } showFlash(`Zapisano: ${status}`); };
+
+// Wykładowca Wystawia Frekwencje (CHMURA)
+const markAttendance = async (studentId, status) => { 
+  const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); 
+  
+  if (record) { 
+    // Prosta symulacja updatu - dla Supabase musimy celować po konkretnych parametrach, jesli nie mamy ID
+    await supabase.from('attendance').update({ status: status }).match({ studentId: studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value });
+  } else { 
+    await supabase.from('attendance').insert([{ studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value, status }]);
+  } 
+  showFlash(`Zapisano w chmurze: ${status}`); 
+};
 
 // --- LOGOWANIE (BEZ POP-UPU ALERTA) ---
 const handleLogin = () => {
-  loginError.value = false; // Resetujemy błąd przed sprawdzeniem
+  loginError.value = false; 
   
   if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { 
     user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; return; 
@@ -472,31 +516,39 @@ const handleLogin = () => {
     user.value = { role: 'wykładowca', login: foundLecturer.login, name: foundLecturer.name, subjects: foundLecturer.subjects }; activeTabLecturer.value = 'pulpit'; return; 
   }
 
+  // Szukanie w tablicy POBRANEJ Z CHMURY
   const foundStudent = students.value.find(s => s.login === loginForm.value.username && s.password === loginForm.value.password);
   
   if (foundStudent) { 
     user.value = { role: 'student', login: foundStudent.login, nrAlbumu: foundStudent.nrAlbumu, name: `${foundStudent.imie} ${foundStudent.nazwisko}`, kierunek: foundStudent.kierunek }; activeTab.value = 'pulpit'; 
   } else { 
-    // Pokazujemy czerwony napis w formularzu zamiast alertu
     loginError.value = true;
   }
 };
 
 const loginWithGoogle = () => { isGoogleLoading.value = true; setTimeout(() => { isGoogleLoading.value = false; user.value = { role: 'student', login: 'google_user', nrAlbumu: 'GoogleAuth', name: 'Student (Google ID)', googleAuth: true, kierunek: 'Informatyka' }; activeTab.value = 'pulpit'; showFlash('Zalogowano przez Google!'); }, 1500); };
-const logout = () => { user.value = null; activePayment.value = null; };
+const logout = () => { user.value = null; activePayment.value = null; loginForm.value.username = ''; loginForm.value.password = '';};
 
-// Zapis studenta bez łączenia z backendem (czysty Real-time na Vercel)
-const saveStudent = () => { 
-  const studentToSave = { ...currentStudent.value, id: Date.now() }; 
-  students.value.unshift(studentToSave); 
-  isEditing.value = false; 
-  showFlash(`Utworzono konto dla: ${currentStudent.value.login}`); 
-  currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; 
+// Dodawanie Studenta do bazy w Chmurze
+const saveStudent = async () => { 
+  const studentToSave = { ...currentStudent.value, password: currentStudent.value.password || '123' }; 
+  
+  const { error } = await supabase.from('students').insert([studentToSave]);
+  
+  if(!error) {
+    isEditing.value = false; 
+    showFlash(`Utworzono konto w chmurze dla: ${currentStudent.value.login}`); 
+    currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; 
+  } else {
+    showFlash("Błąd zapisu! Sprawdź tabelę Supabase.");
+  }
 };
-const deleteStudent = (student) => { 
+
+// Usuwanie z bazy w chmurze
+const deleteStudent = async (student) => { 
   if(confirm(`Usunąć studenta ${student.imie}?`)) { 
-    students.value = students.value.filter(s => s.id !== student.id); 
-    showFlash("Skreślono z listy. Statystyki zaktualizowane."); 
+    await supabase.from('students').delete().eq('nrAlbumu', student.nrAlbumu);
+    showFlash("Skreślono z listy w chmurze."); 
   } 
 };
 </script>
