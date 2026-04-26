@@ -445,6 +445,7 @@ const submitGrade = async () => {
     const { error } = await supabase.from('grades').insert([newGrade]);
     
     if(!error) {
+      await fetchData(); // <--- ODSWIEZ BEZ F5
       showFlash(`Oceniono studenta w chmurze: ${actionStudent.value.imie}!`); 
       actionStudent.value = null; 
       tempActionData.value.subject = ''; 
@@ -483,6 +484,7 @@ const saveLecturerGrade = async (student) => {
   
   const { error } = await supabase.from('grades').insert([newGrade]);
   if(!error) {
+    await fetchData(); // <--- ODSWIEZ BEZ F5
     showFlash(`Wystawiono ocenę w chmurze studentowi: ${student.imie} ${student.nazwisko}`); 
     tempLecturerGrades.value[student.nrAlbumu] = null; 
   }
@@ -500,13 +502,17 @@ const markAttendance = async (studentId, status) => {
   } else { 
     await supabase.from('attendance').insert([{ studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value, status }]);
   } 
+  
+  await fetchData(); // <--- ODSWIEZ BEZ F5
   showFlash(`Zapisano w chmurze: ${status}`); 
 };
 
-// --- LOGOWANIE (BEZ POP-UPU ALERTA) ---
-const handleLogin = () => {
+// --- LOGOWANIE (ASYNC - POPRAWA BŁĘDU PIERWSZEGO WEJŚCIA) ---
+const handleLogin = async () => {
   loginError.value = false; 
   
+  await fetchData(); // <--- ZMUSZA SYSTEM DO POBRANIA DANYCH ZANIM SPRAWDZI HASŁO
+
   if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { 
     user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; return; 
   } 
@@ -536,6 +542,7 @@ const saveStudent = async () => {
   const { error } = await supabase.from('students').insert([studentToSave]);
   
   if(!error) {
+    await fetchData(); // <--- ODSWIEZ BEZ F5
     isEditing.value = false; 
     showFlash(`Utworzono konto w chmurze dla: ${currentStudent.value.login}`); 
     currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; 
@@ -548,6 +555,7 @@ const saveStudent = async () => {
 const deleteStudent = async (student) => { 
   if(confirm(`Usunąć studenta ${student.imie}?`)) { 
     await supabase.from('students').delete().eq('nrAlbumu', student.nrAlbumu);
+    await fetchData(); // <--- ODSWIEZ BEZ F5
     showFlash("Skreślono z listy w chmurze."); 
   } 
 };
