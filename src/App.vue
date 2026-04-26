@@ -10,6 +10,9 @@
               <div class="mb-3"><label class="form-label text-white-50 fw-semibold">Login (student / wykładowca / admin)</label><input v-model="loginForm.username" type="text" class="form-control bg-dark border-secondary text-light" placeholder="Wpisz swój login..."></div>
               <div class="mb-4"><label class="form-label text-white-50 fw-semibold">Hasło</label><input v-model="loginForm.password" type="password" class="form-control bg-dark border-secondary text-light" placeholder="Wpisz hasło..." @keyup.enter="handleLogin"></div>
               <button @click="handleLogin" class="btn btn-primary w-100 py-2 fw-bold rounded-3">Zaloguj System</button>
+              
+              <div v-if="loginError" class="alert alert-danger py-2 mt-3 mb-0 text-center fw-bold border-0 shadow-sm">Błędny login lub hasło!</div>
+
               <div class="d-flex align-items-center my-4"><hr class="flex-grow-1 border-secondary"><span class="mx-3 text-white-50 small fw-bold">LUB</span><hr class="flex-grow-1 border-secondary"></div>
               <button @click="loginWithGoogle" :disabled="isGoogleLoading" class="btn btn-light w-100 py-2 fw-bold rounded-3 d-flex justify-content-center align-items-center gap-3 google-btn">
                 <svg v-if="!isGoogleLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
@@ -52,7 +55,7 @@
         </div>
 
         <div class="sidebar bg-panel d-flex flex-column p-3 shadow-lg" style="width: 280px; z-index: 10;">
-          <h4 class="fw-bold text-info mb-4 mt-2 px-3">COOJONS ACADEMY</h4>
+          <h4 class="fw-bold text-info mb-4 mt-2 px-3">Akademia Bialska</h4>
           <ul v-if="user.role === 'student'" class="nav nav-pills flex-column mb-auto gap-2">
             <li class="nav-item"><a href="#" @click.prevent="activeTab = 'pulpit'" class="nav-link text-white-50 px-4 py-3" :class="{'active-tab text-white': activeTab === 'pulpit'}">🖥️ Pulpit</a></li>
             <li class="nav-item"><a href="#" @click.prevent="activeTab = 'mlegitymacja'" class="nav-link text-white-50 px-4 py-3 text-success fw-bold" :class="{'active-tab text-white bg-success': activeTab === 'mlegitymacja'}">🪪 mLegitymacja</a></li>
@@ -184,7 +187,7 @@
             <div v-if="activeTab === 'mlegitymacja'" class="d-flex justify-content-center pt-3">
               <div class="m-legitymacja-card rounded-4 p-4 text-white shadow-lg position-relative overflow-hidden" style="width: 380px; min-height: 600px;">
                 <div class="position-absolute top-0 start-0 w-100" style="height: 6px; background: linear-gradient(90deg, white 50%, #dc143c 50%);"></div>
-                <div class="text-center border-bottom border-secondary pb-3 mb-4"><h4 class="fw-bold mb-0">mLegitymacja</h4><small class="text-white-50">COOJONS ACADEMY</small></div>
+                <div class="text-center border-bottom border-secondary pb-3 mb-4"><h4 class="fw-bold mb-0">mLegitymacja</h4><small class="text-white-50">Akademia Bialska im. Jana Pawła II</small></div>
                 <div class="d-flex align-items-center mb-4 bg-dark bg-opacity-50 p-3 rounded-3"><div class="avatar bg-secondary rounded-circle d-flex justify-content-center align-items-center fs-1 border border-2 border-white me-3" style="width: 80px; height: 80px;">👤</div><div><h5 class="fw-bold mb-0">{{ user.name }}</h5><div class="text-info font-monospace mt-1">Album: {{ user.nrAlbumu }}</div></div></div>
                 <div class="bg-white rounded-4 p-3 text-center mb-4 position-relative hologram-container"><div class="hologram-line"></div>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="160" height="160" class="mx-auto d-block opacity-75"><rect width="100" height="100" fill="#ffffff"/><path d="M10 10h25v25H10zM15 15h15v15H15zM65 10h25v25H65zM70 15h15v15H70zM10 65h25v25H10zM15 70h15v15H15zM45 10h10v10H45zM45 80h10v10H45zM80 45h10v10H80zM10 45h10v10H10zM25 45h20v20H25zM60 45h10v10H60zM45 25h10v10H45zM45 60h10v10H45zM80 80h10v10H80z" fill="#121212"/><circle cx="50" cy="50" r="10" fill="#1976D2" opacity="0.8"/></svg>
@@ -264,13 +267,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-
-const apiUrl = 'http://localhost:5067/api/students'; 
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 
 const globalFontSize = ref(15);
 const user = ref(null);
 const loginForm = ref({ username: '', password: '' });
+const loginError = ref(false); // NOWOŚĆ: Przełącznik błędu logowania
 const activeTab = ref('pulpit');
 const activeTabAdmin = ref('statystyki');
 const activeTabLecturer = ref('pulpit');
@@ -288,22 +290,26 @@ const isBotTyping = ref(false);
 const chatMessages = ref([{ sender: 'bot', text: 'Cześć! Jestem Twoim wirtualnym asystentem. Spróbuj zapytać o płatności, stypendia lub plan zajęć.' }]);
 const sendChatMessage = () => { if (!chatInput.value.trim()) return; const userText = chatInput.value; chatMessages.value.push({ sender: 'user', text: userText }); chatInput.value = ''; isBotTyping.value = true; setTimeout(() => { isBotTyping.value = false; let reply = "Więcej informacji znajdziesz na stronie głównej Uczelni lub w Dziekanacie."; const lower = userText.toLowerCase(); if (lower.includes('stypend') || lower.includes('wniosek')) reply = "Wnioski o stypendium złożysz w zakładce 'e-Wnioski'. Pamiętaj o uzasadnieniu!"; else if (lower.includes('płatnoś') || lower.includes('zapła') || lower.includes('blik')) reply = "Wszelkie opłaty uregulujesz w zakładce 'Płatności' za pomocą BLIK lub Apple Pay."; else if (lower.includes('legitymacj')) reply = "Twoja cyfrowa mLegitymacja dostępna jest w nowej zakładce w menu po lewej stronie."; else if (lower.includes('plan')) reply = "Twój plan zajęć znajduje się w zakładce 'Mój Plan'."; chatMessages.value.push({ sender: 'bot', text: reply }); }, 1000); };
 
-// --- NOWOŚĆ: 3 STUDENTÓW NA KAŻDY KIERUNEK (RAZEM 9) ---
-const students = ref([
+// =========================================================================
+// NOWOŚĆ: BAZY DANYCH W CZASIE RZECZYWISTYM (REAL-TIME LOCAL STORAGE)
+// =========================================================================
+
+// 1. STUDENCI
+const baseStudents = [
   { id: 1, imie: 'Michał', nazwisko: 'Kamiński', nrAlbumu: '84932', login: 'michal', password: '123', kierunek: 'Informatyka' },
   { id: 2, imie: 'Krzysztof', nazwisko: 'Krawczyk', nrAlbumu: '84940', login: 'krzysztof', password: '123', kierunek: 'Informatyka' },
   { id: 3, imie: 'Adam', nazwisko: 'Małysz', nrAlbumu: '84941', login: 'adam', password: '123', kierunek: 'Informatyka' },
-  
   { id: 4, imie: 'Anna', nazwisko: 'Zielińska', nrAlbumu: '84933', login: 'anna', password: '123', kierunek: 'Ekonomia' },
   { id: 5, imie: 'Maria', nazwisko: 'Skłodowska', nrAlbumu: '84942', login: 'maria', password: '123', kierunek: 'Ekonomia' },
   { id: 6, imie: 'Jan', nazwisko: 'Paweł', nrAlbumu: '84943', login: 'jan', password: '123', kierunek: 'Ekonomia' },
-  
   { id: 7, imie: 'Piotr', nazwisko: 'Nowak', nrAlbumu: '84934', login: 'piotr', password: '123', kierunek: 'Pielęgniarstwo' },
   { id: 8, imie: 'Ewa', nazwisko: 'Kopacz', nrAlbumu: '84945', login: 'ewa', password: '123', kierunek: 'Pielęgniarstwo' },
   { id: 9, imie: 'Florence', nazwisko: 'Nightingale', nrAlbumu: '84944', login: 'florence', password: '123', kierunek: 'Pielęgniarstwo' }
-]);
+];
+const students = ref(JSON.parse(localStorage.getItem('coojons_students')) || baseStudents);
+watch(students, (val) => localStorage.setItem('coojons_students', JSON.stringify(val)), { deep: true });
 
-// --- NOWOŚĆ: ROZBUDOWANA KADRA WYKŁADOWCÓW (6 OSÓB) ---
+// 2. WYKŁADOWCY
 const baseLecturers = [
   { id: 1, name: 'Dr inż. Adam Nowak', login: 'anowak', password: '123', subjects: ['Inżynieria Oprogramowania', 'Bazy Danych SQL', 'Algorytmy i Struktury Danych'] },
   { id: 2, name: 'Prof. Maria Wiśniewska', login: 'mwisniewska', password: '123', subjects: ['Mikroekonomia', 'Rachunkowość Zarządcza', 'Finanse Przedsiębiorstw', 'Statystyka'] },
@@ -312,20 +318,11 @@ const baseLecturers = [
   { id: 5, name: 'Mgr Anna Dąbrowska', login: 'adabrowska', password: '123', subjects: ['Podstawy Pielęgniarstwa', 'Praktyki Szpitalne', 'Farmakologia'] },
   { id: 6, name: 'Mec. Piotr Lewandowski', login: 'plewandowski', password: '123', subjects: ['Prawo Gospodarcze', 'BHP'] }
 ];
+const lecturers = ref(JSON.parse(localStorage.getItem('coojons_lecturers')) || baseLecturers);
+watch(lecturers, (val) => localStorage.setItem('coojons_lecturers', JSON.stringify(val)), { deep: true });
 
-const customAccounts = ref(JSON.parse(localStorage.getItem('coojons_accounts')) || []);
-const customLecturers = ref(JSON.parse(localStorage.getItem('coojons_lecturers')) || []);
-const lecturers = ref([...baseLecturers, ...customLecturers.value]);
-
-// --- DNI TYGODNIA DO GRUPOWANIA PLANU ---
-const daysOfWeek = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'];
-const getLessonsByDay = (schedule, day) => {
-  if(!schedule) return [];
-  return schedule.filter(l => l.day === day).sort((a,b) => a.time.localeCompare(b.time));
-};
-
-// --- NOWOŚĆ: PEŁNY PLAN ZAJĘĆ Z PODZIAŁEM NA DNI ---
-const sharedSchedules = ref({
+// 3. PLAN ZAJĘĆ
+const baseSchedules = {
   'Informatyka': [
     { day: 'Poniedziałek', time: '08:00 - 09:30', subject: 'Inżynieria Oprogramowania', room: 'Aula B' }, 
     { day: 'Poniedziałek', time: '10:00 - 11:30', subject: 'Architektura Komputerów', room: 'Lab 102' },
@@ -352,7 +349,48 @@ const sharedSchedules = ref({
     { day: 'Czwartek', time: '12:00 - 13:30', subject: 'Język Angielski', room: 'Sala Językowa 2' },
     { day: 'Piątek', time: '08:00 - 12:00', subject: 'Praktyki Szpitalne', room: 'Szpital Wojewódzki' }
   ]
-});
+};
+const sharedSchedules = ref(JSON.parse(localStorage.getItem('coojons_schedules')) || baseSchedules);
+watch(sharedSchedules, (val) => localStorage.setItem('coojons_schedules', JSON.stringify(val)), { deep: true });
+
+// 4. OCENY, PŁATNOŚCI, OBECNOŚCI
+const baseGrades = [
+  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '04.04.2026', grade: '4.0' }, { studentId: '84932', subject: 'Bazy Danych SQL', date: '15.04.2026', grade: '4.5' }, { studentId: '84940', subject: 'Algorytmy i Struktury Danych', date: '18.04.2026', grade: '3.0' }, { studentId: '84941', subject: 'Inżynieria Oprogramowania', date: '04.04.2026', grade: '5.0' }, { studentId: '84941', subject: 'Język Angielski', date: '25.04.2026', grade: '4.5' }, 
+  { studentId: '84933', subject: 'Mikroekonomia', date: '07.04.2026', grade: '5.0' }, { studentId: '84933', subject: 'Statystyka', date: '21.04.2026', grade: '4.5' }, { studentId: '84942', subject: 'Finanse Przedsiębiorstw', date: '14.04.2026', grade: '3.5' }, { studentId: '84943', subject: 'Prawo Gospodarcze', date: '20.04.2026', grade: '4.0' }, 
+  { studentId: '84934', subject: 'Anatomia Prawidłowa', date: '06.04.2026', grade: '3.5' }, { studentId: '84934', subject: 'Fizjologia', date: '22.04.2026', grade: '4.0' }, { studentId: '84945', subject: 'Farmakologia', date: '15.04.2026', grade: '3.0' }, { studentId: '84944', subject: 'Podstawy Pielęgniarstwa', date: '18.04.2026', grade: '5.0' }
+];
+const sharedGrades = ref(JSON.parse(localStorage.getItem('coojons_grades')) || baseGrades);
+watch(sharedGrades, (val) => localStorage.setItem('coojons_grades', JSON.stringify(val)), { deep: true });
+
+const baseAttendance = [
+  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-06', status: 'Obecny' }, { studentId: '84932', subject: 'Bazy Danych SQL', date: '2026-04-08', status: 'Spóźniony' }, { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-13', status: 'Nieobecny' }, { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-20', status: 'Obecny' },
+  { studentId: '84933', subject: 'Mikroekonomia', date: '2026-04-07', status: 'Obecny' }, { studentId: '84933', subject: 'Statystyka', date: '2026-04-15', status: 'Obecny' },
+  { studentId: '84934', subject: 'Anatomia Prawidłowa', date: '2026-04-06', status: 'Obecny' }, { studentId: '84934', subject: 'Farmakologia', date: '2026-04-16', status: 'Nieobecny' }, { studentId: '84934', subject: 'Fizjologia', date: '2026-04-21', status: 'Obecny' }
+];
+const sharedAttendance = ref(JSON.parse(localStorage.getItem('coojons_attendance')) || baseAttendance);
+watch(sharedAttendance, (val) => localStorage.setItem('coojons_attendance', JSON.stringify(val)), { deep: true });
+
+const basePayments = [{ id: 1, studentId: '84932', title: 'Opłata za warunkowy wpis na semestr', amount: 800.00, status: 'Do zapłaty' }, { id: 2, studentId: '84932', title: 'Wydanie duplikatu legitymacji', amount: 33.00, status: 'Do zapłaty' }, { id: 3, studentId: '84933', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Do zapłaty' }, { id: 4, studentId: '84934', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Opłacone' }];
+const sharedPayments = ref(JSON.parse(localStorage.getItem('coojons_payments')) || basePayments);
+watch(sharedPayments, (val) => localStorage.setItem('coojons_payments', JSON.stringify(val)), { deep: true });
+
+const baseRequests = [{ studentId: '84932', student: 'Michał Kamiński', type: 'Wniosek o urlop dziekański', description: 'Powody osobiste', attachment: null, date: '10.04.2026', status: 'Zatwierdzony' }];
+const sharedRequests = ref(JSON.parse(localStorage.getItem('coojons_requests')) || baseRequests);
+watch(sharedRequests, (val) => localStorage.setItem('coojons_requests', JSON.stringify(val)), { deep: true });
+
+const baseNotifications = [{ studentId: '84932', msg: 'Zwróć książki do biblioteki przed końcem maja.' }];
+const sharedNotifications = ref(JSON.parse(localStorage.getItem('coojons_notifications')) || baseNotifications);
+watch(sharedNotifications, (val) => localStorage.setItem('coojons_notifications', JSON.stringify(val)), { deep: true });
+
+const baseNews = [{ date: 'Dzisiaj', title: 'System Rozliczeń', desc: 'Uruchomiono moduł płatności oraz integrację mLegitymacji.' }, { date: '15.04', title: 'Przerwa Świąteczna', desc: 'Przypominamy o przerwie w dniach 1-3 Maja.' }];
+const sharedNews = ref(JSON.parse(localStorage.getItem('coojons_news')) || baseNews);
+watch(sharedNews, (val) => localStorage.setItem('coojons_news', JSON.stringify(val)), { deep: true });
+
+// =========================================================================
+
+// --- DNI TYGODNIA DO GRUPOWANIA PLANU ---
+const daysOfWeek = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'];
+const getLessonsByDay = (schedule, day) => { if(!schedule) return []; return schedule.filter(l => l.day === day).sort((a,b) => a.time.localeCompare(b.time)); };
 
 const availableSubjectsList = computed(() => { const subs = new Set(['Język Angielski', 'BHP', 'Wychowanie Fizyczne']); Object.values(sharedSchedules.value).forEach(schedule => { schedule.forEach(lesson => subs.add(lesson.subject)); }); return Array.from(subs).sort(); });
 
@@ -360,46 +398,6 @@ const adminSelectedMajor = ref('Informatyka');
 const newLesson = ref({ day: '', time: '', subject: '', room: '' });
 const addLesson = () => { if(newLesson.value.subject && newLesson.value.day){ if (!sharedSchedules.value[adminSelectedMajor.value]) { sharedSchedules.value[adminSelectedMajor.value] = []; } sharedSchedules.value[adminSelectedMajor.value].push({...newLesson.value}); newLesson.value = { day: '', time: '', subject: '', room: '' }; showFlash(`Zajęcia dodane do planu: ${adminSelectedMajor.value}!`); } };
 const removeLesson = (major, lesson) => { sharedSchedules.value[major] = sharedSchedules.value[major].filter(l => l !== lesson); };
-
-const sharedPayments = ref([{ id: 1, studentId: '84932', title: 'Opłata za warunkowy wpis na semestr', amount: 800.00, status: 'Do zapłaty' }, { id: 2, studentId: '84932', title: 'Wydanie duplikatu legitymacji', amount: 33.00, status: 'Do zapłaty' }, { id: 3, studentId: '84933', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Do zapłaty' }, { id: 4, studentId: '84934', title: 'Opłata rekrutacyjna', amount: 85.00, status: 'Opłacone' }]);
-
-// --- NOWOŚĆ: HISTORYCZNE OCENY (DLA WIELU STUDENTÓW Z KWIETNIA/MAJA) ---
-const sharedGrades = ref([
-  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '04.04.2026', grade: '4.0' }, 
-  { studentId: '84932', subject: 'Bazy Danych SQL', date: '15.04.2026', grade: '4.5' }, 
-  { studentId: '84940', subject: 'Algorytmy i Struktury Danych', date: '18.04.2026', grade: '3.0' }, 
-  { studentId: '84941', subject: 'Inżynieria Oprogramowania', date: '04.04.2026', grade: '5.0' }, 
-  { studentId: '84941', subject: 'Język Angielski', date: '25.04.2026', grade: '4.5' }, 
-  
-  { studentId: '84933', subject: 'Mikroekonomia', date: '07.04.2026', grade: '5.0' }, 
-  { studentId: '84933', subject: 'Statystyka', date: '21.04.2026', grade: '4.5' }, 
-  { studentId: '84942', subject: 'Finanse Przedsiębiorstw', date: '14.04.2026', grade: '3.5' }, 
-  { studentId: '84943', subject: 'Prawo Gospodarcze', date: '20.04.2026', grade: '4.0' }, 
-  
-  { studentId: '84934', subject: 'Anatomia Prawidłowa', date: '06.04.2026', grade: '3.5' },
-  { studentId: '84934', subject: 'Fizjologia', date: '22.04.2026', grade: '4.0' },
-  { studentId: '84945', subject: 'Farmakologia', date: '15.04.2026', grade: '3.0' },
-  { studentId: '84944', subject: 'Podstawy Pielęgniarstwa', date: '18.04.2026', grade: '5.0' }
-]);
-
-const sharedRequests = ref([{ studentId: '84932', student: 'Michał Kamiński', type: 'Wniosek o urlop dziekański', description: 'Powody osobiste', attachment: null, date: '10.04.2026', status: 'Zatwierdzony' }]);
-const sharedNotifications = ref([{ studentId: '84932', msg: 'Zwróć książki do biblioteki przed końcem maja.' }]);
-const sharedNews = ref([{ date: 'Dzisiaj', title: 'System Rozliczeń', desc: 'Uruchomiono moduł płatności oraz integrację mLegitymacji.' }, { date: '15.04', title: 'Przerwa Świąteczna', desc: 'Przypominamy o przerwie w dniach 1-3 Maja.' }]);
-
-// --- NOWOŚĆ: HISTORYCZNE OBECNOŚCI OD KWIETNIA ---
-const sharedAttendance = ref([
-  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-06', status: 'Obecny' },
-  { studentId: '84932', subject: 'Bazy Danych SQL', date: '2026-04-08', status: 'Spóźniony' },
-  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-13', status: 'Nieobecny' },
-  { studentId: '84932', subject: 'Inżynieria Oprogramowania', date: '2026-04-20', status: 'Obecny' },
-  
-  { studentId: '84933', subject: 'Mikroekonomia', date: '2026-04-07', status: 'Obecny' },
-  { studentId: '84933', subject: 'Statystyka', date: '2026-04-15', status: 'Obecny' },
-  
-  { studentId: '84934', subject: 'Anatomia Prawidłowa', date: '2026-04-06', status: 'Obecny' },
-  { studentId: '84934', subject: 'Farmakologia', date: '2026-04-16', status: 'Nieobecny' },
-  { studentId: '84934', subject: 'Fizjologia', date: '2026-04-21', status: 'Obecny' }
-]);
 
 const myPayments = computed(() => sharedPayments.value.filter(p => p.studentId === user.value?.nrAlbumu));
 const myGrades = computed(() => sharedGrades.value.filter(g => g.studentId === user.value?.nrAlbumu));
@@ -441,15 +439,9 @@ const currentLecturer = ref({ imie: '', nazwisko: '', login: '', password: '', s
 const saveLecturer = () => {
   if(!currentLecturer.value.login || currentLecturer.value.subjects.length === 0) { showFlash("Wypełnij login i przypisz przedmioty!"); return; }
   const newLec = { id: Date.now(), name: `${currentLecturer.value.imie} ${currentLecturer.value.nazwisko}`, login: currentLecturer.value.login, password: currentLecturer.value.password, subjects: [...currentLecturer.value.subjects] };
-  lecturers.value.push(newLec); customLecturers.value.push(newLec); localStorage.setItem('coojons_lecturers', JSON.stringify(customLecturers.value));
-  isEditingLecturer.value = false; showFlash(`Utworzono wykładowcę: ${newLec.name}`); currentLecturer.value = { imie: '', nazwisko: '', login: '', password: '', subjects: [] };
+  lecturers.value.push(newLec); isEditingLecturer.value = false; showFlash(`Utworzono wykładowcę: ${newLec.name}`); currentLecturer.value = { imie: '', nazwisko: '', login: '', password: '', subjects: [] };
 };
-const deleteLecturer = (lec) => {
-  if(confirm(`Usunąć wykładowcę ${lec.name}?`)) {
-    lecturers.value = lecturers.value.filter(l => l.id !== lec.id); customLecturers.value = customLecturers.value.filter(l => l.id !== lec.id);
-    localStorage.setItem('coojons_lecturers', JSON.stringify(customLecturers.value)); showFlash("Wykładowca usunięty.");
-  }
-};
+const deleteLecturer = (lec) => { if(confirm(`Usunąć wykładowcę ${lec.name}?`)) { lecturers.value = lecturers.value.filter(l => l.id !== lec.id); showFlash("Wykładowca usunięty."); } };
 
 const selectedSubjectLecturer = ref('');
 const attendanceDate = ref(new Date().toISOString().split('T')[0]);
@@ -467,22 +459,46 @@ const saveLecturerGrade = (student) => {
 const getAttendanceStatus = (studentId) => { const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); return record ? record.status : null; };
 const markAttendance = (studentId, status) => { const record = sharedAttendance.value.find(a => a.studentId === studentId && a.subject === selectedSubjectLecturer.value && a.date === attendanceDate.value); if (record) { record.status = status; } else { sharedAttendance.value.push({ studentId, subject: selectedSubjectLecturer.value, date: attendanceDate.value, status }); } showFlash(`Zapisano: ${status}`); };
 
+// --- LOGOWANIE (BEZ POP-UPU ALERTA) ---
 const handleLogin = () => {
-  if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; fetchStudents(); return; } 
+  loginError.value = false; // Resetujemy błąd przed sprawdzeniem
+  
+  if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { 
+    user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; return; 
+  } 
+  
   const foundLecturer = lecturers.value.find(l => l.login === loginForm.value.username && l.password === loginForm.value.password);
-  if (foundLecturer) { user.value = { role: 'wykładowca', login: foundLecturer.login, name: foundLecturer.name, subjects: foundLecturer.subjects }; activeTabLecturer.value = 'pulpit'; return; }
-  let foundStudent = students.value.find(s => s.login === loginForm.value.username && s.password === loginForm.value.password);
-  if(!foundStudent) foundStudent = customAccounts.value.find(c => c.login === loginForm.value.username && c.password === loginForm.value.password);
-  if (foundStudent) { user.value = { role: 'student', login: foundStudent.login, nrAlbumu: foundStudent.nrAlbumu, name: `${foundStudent.imie} ${foundStudent.nazwisko}`, kierunek: foundStudent.kierunek }; activeTab.value = 'pulpit'; } 
-  else { alert("Błędne dane!\n\nAdmin: admin / 123\n\nStudenci:\nmichal / 123\nanna / 123\npiotr / 123\n\nWykładowca:\nanowak / 123"); }
+  if (foundLecturer) { 
+    user.value = { role: 'wykładowca', login: foundLecturer.login, name: foundLecturer.name, subjects: foundLecturer.subjects }; activeTabLecturer.value = 'pulpit'; return; 
+  }
+
+  const foundStudent = students.value.find(s => s.login === loginForm.value.username && s.password === loginForm.value.password);
+  
+  if (foundStudent) { 
+    user.value = { role: 'student', login: foundStudent.login, nrAlbumu: foundStudent.nrAlbumu, name: `${foundStudent.imie} ${foundStudent.nazwisko}`, kierunek: foundStudent.kierunek }; activeTab.value = 'pulpit'; 
+  } else { 
+    // Pokazujemy czerwony napis w formularzu zamiast alertu
+    loginError.value = true;
+  }
 };
 
 const loginWithGoogle = () => { isGoogleLoading.value = true; setTimeout(() => { isGoogleLoading.value = false; user.value = { role: 'student', login: 'google_user', nrAlbumu: 'GoogleAuth', name: 'Student (Google ID)', googleAuth: true, kierunek: 'Informatyka' }; activeTab.value = 'pulpit'; showFlash('Zalogowano przez Google!'); }, 1500); };
 const logout = () => { user.value = null; activePayment.value = null; };
 
-const fetchStudents = async () => { try { const response = await fetch(apiUrl); const apiData = await response.json(); if(apiData.length > 0) { const merged = [...students.value, ...apiData]; students.value = Array.from(new Set(merged.map(a => a.nrAlbumu))).map(nr => { const localMatch = students.value.find(s => s.nrAlbumu === nr); const apiMatch = apiData.find(a => a.nrAlbumu === nr); return { ...apiMatch, ...localMatch }; }); } } catch(e) {} };
-const saveStudent = async () => { const newAcc = { nrAlbumu: currentStudent.value.nrAlbumu, login: currentStudent.value.login, password: currentStudent.value.password, imie: currentStudent.value.imie, nazwisko: currentStudent.value.nazwisko, kierunek: currentStudent.value.kierunek }; customAccounts.value.push(newAcc); localStorage.setItem('coojons_accounts', JSON.stringify(customAccounts.value)); const studentToSave = { ...currentStudent.value, id: Date.now() }; students.value.unshift(studentToSave); try { await fetch(apiUrl, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(currentStudent.value) }); } catch(e) { } isEditing.value = false; showFlash(`Utworzono konto dla: ${currentStudent.value.login}`); currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; };
-const deleteStudent = async (student) => { if(confirm(`Usunąć studenta ${student.imie}?`)) { students.value = students.value.filter(s => s !== student); const dbId = student.id || student.Id; try { if(dbId) await fetch(`${apiUrl}/${dbId}`, { method: 'DELETE' }); } catch(e) {} showFlash("Skreślono z listy."); } };
+// Zapis studenta bez łączenia z backendem (czysty Real-time na Vercel)
+const saveStudent = () => { 
+  const studentToSave = { ...currentStudent.value, id: Date.now() }; 
+  students.value.unshift(studentToSave); 
+  isEditing.value = false; 
+  showFlash(`Utworzono konto dla: ${currentStudent.value.login}`); 
+  currentStudent.value = { imie: '', nazwisko: '', nrAlbumu: '', login: '', password: '', kierunek: 'Informatyka' }; 
+};
+const deleteStudent = (student) => { 
+  if(confirm(`Usunąć studenta ${student.imie}?`)) { 
+    students.value = students.value.filter(s => s.id !== student.id); 
+    showFlash("Skreślono z listy. Statystyki zaktualizowane."); 
+  } 
+};
 </script>
 
 <style>
