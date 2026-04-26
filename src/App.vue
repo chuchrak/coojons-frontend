@@ -6,7 +6,7 @@
         <div class="col-12 col-md-8 col-lg-5">
           <div class="card bg-panel border-0 rounded-4 shadow-lg">
             <div class="card-body p-4 p-md-5">
-              <div class="text-center mb-4"><h2 class="fw-bold mb-1 text-white">COOJONS</h2><p class="text-white-50">Portal Akademicki v2.0</p></div>
+              <div class="text-center mb-4"><h2 class="fw-bold mb-1 text-white">COOJONS</h2><p class="text-white-50">COOJONS 2.0</p></div>
               <div class="mb-3"><label class="form-label text-white-50 fw-semibold">Login (student / wykładowca / admin)</label><input v-model="loginForm.username" type="text" class="form-control bg-dark border-secondary text-light" placeholder="Wpisz swój login..."></div>
               <div class="mb-4"><label class="form-label text-white-50 fw-semibold">Hasło</label><input v-model="loginForm.password" type="password" class="form-control bg-dark border-secondary text-light" placeholder="Wpisz hasło..." @keyup.enter="handleLogin"></div>
               <button @click="handleLogin" class="btn btn-primary w-100 py-2 fw-bold rounded-3">Zaloguj System</button>
@@ -30,7 +30,7 @@
       <div class="header-top d-flex justify-content-between align-items-center px-3 px-md-4 py-3 bg-darker">
         <div class="d-flex align-items-center gap-3">
           <button class="btn btn-outline-light d-md-none border-0 px-2 py-1" @click="mobileMenuOpen = true">☰</button>
-          <h4 class="mb-0 fw-bold text-white fs-5 fs-md-4">Portal Akademicki v2.0</h4>
+          <h4 class="mb-0 fw-bold text-white fs-5 fs-md-4">COOJONS 2.0</h4>
         </div>
         <div class="text-end d-flex gap-2 gap-md-4">
           <div class="d-none d-md-block"><small class="text-white-50 d-block text-uppercase" style="font-size: 0.7em; letter-spacing: 1px;">Moduł</small><span class="fw-bold text-white text-capitalize">{{ user.role }}</span></div>
@@ -62,7 +62,7 @@
              <h4 class="fw-bold text-info mb-0 px-2">Menu</h4>
              <button class="btn btn-sm btn-outline-secondary" @click="mobileMenuOpen = false">✖</button>
           </div>
-          <h4 class="fw-bold text-info mb-4 mt-2 px-3 d-none d-md-block">Akademia Bialska</h4>
+          <h4 class="fw-bold text-info mb-4 mt-2 px-3 d-none d-md-block">COOJONS</h4>
           
           <ul v-if="user.role === 'student'" class="nav nav-pills flex-column mb-auto gap-2">
             <li class="nav-item"><a href="#" @click.prevent="activeTab = 'pulpit'; mobileMenuOpen = false" class="nav-link text-white-50 px-4 py-3" :class="{'active-tab text-white': activeTab === 'pulpit'}">🖥️ Pulpit</a></li>
@@ -278,7 +278,7 @@
             
             <div v-if="activeTab === 'mlegitymacja'" class="d-flex justify-content-center pt-3">
               <div class="m-legitymacja-card rounded-4 p-3 p-md-4 text-white shadow-lg position-relative overflow-hidden w-100" style="max-width: 380px; min-height: 500px; background: linear-gradient(135deg, #102128 0%, #1c3b47 100%);">
-                <div class="text-center border-bottom border-secondary pb-3 mb-4"><h4 class="fw-bold mb-0 fs-5 fs-md-4">mLegitymacja</h4><small class="text-white-50">Akademia Bialska</small></div>
+                <div class="text-center border-bottom border-secondary pb-3 mb-4"><h4 class="fw-bold mb-0 fs-5 fs-md-4">mLegitymacja</h4><small class="text-white-50">COOJONS</small></div>
                 <div class="d-flex align-items-center mb-4 bg-dark bg-opacity-50 p-2 p-md-3 rounded-3">
                   <div class="avatar bg-secondary rounded-circle d-flex justify-content-center align-items-center fs-2 border border-2 border-white me-3" style="width: 60px; height: 60px;">👤</div>
                   <div><h5 class="fw-bold mb-0 fs-6 fs-md-5">{{ user.name }}</h5><div class="text-info font-monospace mt-1 small">Album: {{ user.nrAlbumu }}</div></div>
