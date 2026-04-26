@@ -7,7 +7,7 @@
           <div class="card bg-panel border-0 rounded-4 shadow-lg">
             <div class="card-body p-5">
               <div class="text-center mb-4"><h2 class="fw-bold mb-1 text-white">COOJONS</h2><p class="text-white-50">Portal Akademicki v2.0</p></div>
-              <div class="mb-3"><label class="form-label text-white-50 fw-semibold">Login (student / wykładowca / admin)</label><input v-model="loginForm.username" type="text" class="form-control bg-dark border-secondary text-light" placeholder="Wpisz swój login..."></div>
+              <div class="mb-3"><label class="form-label text-white-50 fw-semibold">Login (student / wykładowca / admin)</label><input v-model="loginForm.username" type="text" class="form-control bg-dark border-secondary text-light" placeholder="np. test (konto z zaległościami)"></div>
               <div class="mb-4"><label class="form-label text-white-50 fw-semibold">Hasło</label><input v-model="loginForm.password" type="password" class="form-control bg-dark border-secondary text-light" placeholder="Wpisz hasło..." @keyup.enter="handleLogin"></div>
               <button @click="handleLogin" class="btn btn-primary w-100 py-2 fw-bold rounded-3">Zaloguj System</button>
               
@@ -93,7 +93,7 @@
 
         <div v-if="mobileMenuOpen" class="mobile-overlay" @click="mobileMenuOpen = false"></div>
 
-        <div class="flex-grow-1 p-3 p-md-5 content-area position-relative overflow-auto" style="height: calc(100vh - 70px);">
+        <div class="flex-grow-1 p-5 content-area position-relative overflow-auto" style="height: calc(100vh - 70px);">
           <div v-if="flashMessage" class="alert alert-success position-absolute top-0 end-0 m-4 shadow z-3 border-0 bg-success text-white fw-bold">{{ flashMessage }}</div>
 
           <div v-if="user.role === 'wykładowca'">
@@ -193,13 +193,13 @@
             <div v-if="activeTab === 'mlegitymacja'" class="d-flex justify-content-center pt-3">
               <div class="m-legitymacja-card rounded-4 p-4 text-white shadow-lg position-relative overflow-hidden w-100" style="max-width: 380px; min-height: 600px; background: linear-gradient(135deg, #102128 0%, #1c3b47 100%);">
                 <div class="position-absolute top-0 start-0 w-100" style="height: 6px; background: linear-gradient(90deg, white 50%, #dc143c 50%);"></div>
-                <div class="text-center border-bottom border-secondary pb-3 mb-4"><h4 class="fw-bold mb-0">mLegitymacja</h4><small class="text-white-50">Akademia Bialska im. Jana Pawła II</small></div>
-                <div class="d-flex align-items-center mb-4 bg-dark bg-opacity-50 p-2 p-md-3 rounded-3"><div class="avatar bg-secondary rounded-circle d-flex justify-content-center align-items-center fs-2 fs-md-1 border border-2 border-white me-3" style="width: 80px; height: 80px;">👤</div><div><h5 class="fw-bold mb-0 fs-6 fs-md-5">{{ user.name }}</h5><div class="text-info font-monospace mt-1 small">Album: {{ user.nrAlbumu }}</div></div></div>
+                <div class="text-center border-bottom border-secondary pb-3 mb-4"><h4 class="fw-bold mb-0 fs-5 fs-md-4">mLegitymacja</h4><small class="text-white-50">Akademia Bialska im. Jana Pawła II</small></div>
+                <div class="d-flex align-items-center mb-4 bg-dark bg-opacity-50 p-2 p-md-3 rounded-3"><div class="avatar bg-secondary rounded-circle d-flex justify-content-center align-items-center fs-2 fs-md-1 border border-2 border-white me-2 me-md-3" style="width: 60px; height: 60px;">👤</div><div><h5 class="fw-bold mb-0 fs-6 fs-md-5">{{ user.name }}</h5><div class="text-info font-monospace mt-1 small">Album: {{ user.nrAlbumu }}</div></div></div>
                 <div class="bg-white rounded-4 p-3 text-center mb-4 position-relative hologram-container"><div class="hologram-line"></div>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="160" height="160" class="mx-auto d-block opacity-75"><rect width="100" height="100" fill="#ffffff"/><path d="M10 10h25v25H10zM15 15h15v15H15zM65 10h25v25H65zM70 15h15v15H70zM10 65h25v25H10zM15 70h15v15H15zM45 10h10v10H45zM45 80h10v10H45zM80 45h10v10H80zM10 45h10v10H10zM25 45h20v20H25zM60 45h10v10H60zM45 25h10v10H45zM45 60h10v10H45zM80 80h10v10H80z" fill="#121212"/><circle cx="50" cy="50" r="10" fill="#1976D2" opacity="0.8"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="120" height="120" class="mx-auto d-block opacity-75"><rect width="100" height="100" fill="#ffffff"/><path d="M10 10h25v25H10zM15 15h15v15H15zM65 10h25v25H65zM70 15h15v15H70zM10 65h25v25H10zM15 70h15v15H15zM45 10h10v10H45zM45 80h10v10H45zM80 45h10v10H80zM10 45h10v10H10zM25 45h20v20H25zM60 45h10v10H60zM45 25h10v10H45zM45 60h10v10H45zM80 80h10v10H80z" fill="#121212"/><circle cx="50" cy="50" r="10" fill="#1976D2" opacity="0.8"/></svg>
                   <small class="text-muted d-block mt-2 fw-bold">Czas: <span class="text-success">{{ currentTime }}</span></small>
                 </div>
-                <div class="bg-dark bg-opacity-50 p-3 rounded-3 mb-4"><div class="d-flex justify-content-between mb-2 small"><span class="text-white-50">Status:</span><span class="text-success fw-bold">Ważna ✅</span></div><div class="d-flex justify-content-between mb-2 small"><span class="text-white-50">Wydana:</span><span>01.10.2025</span></div><div class="d-flex justify-content-between small"><span class="text-white-50">Ważna do:</span><span class="fw-bold">31.03.2027</span></div></div>
+                <div class="bg-dark bg-opacity-50 p-2 p-md-3 rounded-3 mb-4"><div class="d-flex justify-content-between mb-2 small"><span class="text-white-50">Status:</span><span class="text-success fw-bold">Ważna ✅</span></div><div class="d-flex justify-content-between mb-2 small"><span class="text-white-50">Wydana:</span><span>01.10.2025</span></div><div class="d-flex justify-content-between small"><span class="text-white-50">Ważna do:</span><span class="fw-bold">31.03.2027</span></div></div>
                 <button class="btn btn-outline-light w-100 rounded-pill">Odśwież certyfikat</button>
               </div>
             </div>
@@ -529,6 +529,10 @@ const handleLogin = async () => {
   if (loginForm.value.username === 'admin' && loginForm.value.password === '123') { user.value = { role: 'dziekanat', login: 'admin', name: 'Pracownik Wydziału' }; activeTabAdmin.value = 'statystyki'; return; } 
   const foundLecturer = lecturers.value.find(l => l.login === loginForm.value.username && l.password === loginForm.value.password);
   if (foundLecturer) { user.value = { role: 'wykładowca', login: foundLecturer.login, name: foundLecturer.name, subjects: foundLecturer.subjects }; activeTabLecturer.value = 'pulpit'; return; }
+
+  // DODANE KONTO TESTOWE Z ZALEGŁOŚCIAMI FINANSOWYMI (nrAlbumu 84932 łączy się z basePayments)
+  if (loginForm.value.username === 'test' && loginForm.value.password === '123') { user.value = { role: 'student', login: 'test', nrAlbumu: '84932', name: 'Jan Testowy (Zaległości)', kierunek: 'Informatyka' }; activeTab.value = 'pulpit'; return; }
+
   const foundStudent = students.value.find(s => s.login === loginForm.value.username && s.password === loginForm.value.password);
   if (foundStudent) { user.value = { role: 'student', login: foundStudent.login, nrAlbumu: foundStudent.nrAlbumu, name: `${foundStudent.imie} ${foundStudent.nazwisko}`, kierunek: foundStudent.kierunek }; activeTab.value = 'pulpit'; } else { loginError.value = true; }
 };
@@ -552,6 +556,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-
 .wrapper { background-color: #17181c; transition: font-size 0.2s; }
 .bg-darker { background-color: #121316 !important; }
 .bg-panel { background-color: #1e1f26 !important; }
+.sidebar { border-right: 1px solid #2d2e36; }
 .text-info { color: #8cb4ff !important; }
 .text-white-50 { color: #b4b8c5 !important; } 
 
@@ -571,7 +576,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-
 .form-control, .form-select { background-color: #121316 !important; color: white !important; border: 1px solid #2d2e36 !important; }
 .form-control:focus, .form-select:focus { border-color: #8cb4ff !important; box-shadow: 0 0 0 0.25rem rgba(140, 180, 255, 0.1); }
 
-.payment-overlay { backdrop-filter: blur(5px); z-index: 1050 !important; }
+.payment-overlay { backdrop-filter: blur(5px); z-index: 1060 !important; }
 .letter-spacing-2 { letter-spacing: 0.5rem; }
 .btn-light { background-color: #e4e6eb; border: none; }
 .btn-light:hover, .google-btn:hover { background-color: #ffffff; }
